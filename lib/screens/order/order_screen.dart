@@ -8,8 +8,15 @@ class OrderScreen extends StatefulWidget {
 }
 
 class _OrderScreenState extends State<OrderScreen> {
-  final List<String> items =
-      List<String>.generate(100, (index) => "Item $index");
+  final List<Map<String, dynamic>> items = List.generate(
+    100,
+    (index) => {
+      'name': 'Item $index',
+      'quantity': index + 1,
+      'option': 'Option $index',
+      'price': (index + 1) * 1000,
+    },
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -42,10 +49,17 @@ class _OrderScreenState extends State<OrderScreen> {
                   child: ListView.builder(
                     itemCount: items.length,
                     itemBuilder: (context, index) {
-                      return Column(
-                        children: [
-                          ListTile(
-                            title: Text(items[index]),
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 8.0, horizontal: 16.0),
+                        child: Card(
+                          elevation: 4.0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          child: ListTile(
+                            leading: Icon(Icons.assignment),
+                            title: Text(items[index]['name']),
                             subtitle: Text('Subtitle $index'),
                             selected: index < 3,
                             contentPadding: EdgeInsets.symmetric(
@@ -55,17 +69,16 @@ class _OrderScreenState extends State<OrderScreen> {
                                 context,
                                 '/order/detail',
                                 arguments: {
-                                  'item': items[index],
-                                  'index': index
+                                  'name': items[index]['name'],
+                                  'quantity': items[index]['quantity'],
+                                  'option': items[index]['option'],
+                                  'price': items[index]['price'],
+                                  'index': index,
                                 },
                               );
                             },
                           ),
-                          Container(
-                            height: 1,
-                            color: Colors.black,
-                          ),
-                        ],
+                        ),
                       );
                     },
                   ),

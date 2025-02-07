@@ -8,19 +8,27 @@ class OrderDetailScreen extends StatefulWidget {
 }
 
 class _OrderDetailScreenState extends State<OrderDetailScreen> {
-  late String item;
+  late String name;
+  late int quantity;
+  late String option;
+  late int price;
   late int index;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     final args = ModalRoute.of(context)!.settings.arguments as Map;
-    item = args['item'];
+    name = args['name'];
+    quantity = args['quantity'];
+    option = args['option'];
+    price = args['price'];
     index = args['index'];
   }
 
   @override
   Widget build(BuildContext context) {
+    int totalPrice = quantity * price;
+
     return Scaffold(
       appBar: AppBar(
         title: Text("상세 페이지"),
@@ -45,16 +53,65 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                   ),
                 ),
                 Divider(),
-                Text(
-                  "아이템: $item",
-                  style: TextStyle(fontSize: 18),
+                Container(
+                  width: double.infinity,
+                  child: Card(
+                    elevation: 2.0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "메뉴 이름: $name",
+                            style: TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(height: 8),
+                          Text(
+                            "수량: $quantity",
+                            style: TextStyle(fontSize: 18),
+                          ),
+                          SizedBox(height: 8),
+                          Text(
+                            "옵션: $option",
+                            style: TextStyle(fontSize: 18),
+                          ),
+                          SizedBox(height: 8),
+                          Text(
+                            "가격: $price 원",
+                            style: TextStyle(fontSize: 18),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
-                SizedBox(height: 10),
-                Text(
-                  "인덱스: $index",
-                  style: TextStyle(fontSize: 18),
+                Spacer(),
+                Divider(),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "총 가격:",
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        '$totalPrice 원',
+                        style: TextStyle(
+                            fontSize: 18,
+                            color: Colors.red,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
                 ),
-                SizedBox(height: 20),
               ],
             ),
           ),
