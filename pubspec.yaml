@@ -40,6 +40,12 @@ dependencies:
   uuid: ^4.5.1
   flutter_secure_storage: ^9.2.4
 
+  # Toss
+  tosspayments_widget_sdk_flutter: ^2.0.9
+  flutter_inappwebview: ^6.1.5
+  json_annotation: ^4.9.0
+  url_launcher: ^6.3.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -62,8 +68,8 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
+  assets:
+    - images/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
