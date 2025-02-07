@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:freeorder_flutter/models/product.dart';
+import 'package:freeorder_flutter/services/product_service.dart';
+import 'package:freeorder_flutter/widgets/image_widget.dart';
 
 class MenuScreen extends StatefulWidget {
   const MenuScreen({super.key});
@@ -9,26 +12,13 @@ class MenuScreen extends StatefulWidget {
 
 class _MenuScreenState extends State<MenuScreen> {
   // 상품 데이터
-  final List<Map<String, String>> products = [
-    {
-      "image": "images/데빌구.gif", // 로컬 이미지 사용
-      "name": "상품 1",
-      "description": "상품 1의 설명입니다.",
-      "price": "₩10,000"
-    },
-    {
-      "image": "images/화난 데빌구.jpg",
-      "name": "상품 2",
-      "description": "상품 2의 설명입니다.",
-      "price": "₩20,000"
-    },
-    {
-      "image": "images/product1.jpg",
-      "name": "상품 3",
-      "description": "상품 3의 설명입니다.",
-      "price": "₩30,000"
-    },
-  ];
+  late Future<List<Map<String, dynamic>>> _products;
+  final productServcie = ProductService();
+  @override
+  void initState() {
+    super.initState();
+    _products = productServcie.list();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -81,17 +71,48 @@ class _MenuScreenState extends State<MenuScreen> {
 
   // 상품 리스트를 빌드하는 함수
   Widget _buildProductList() {
-    return ListView.builder(
-      padding: EdgeInsets.all(10),
-      itemCount: products.length,
-      itemBuilder: (context, index) {
-        return _buildProductCard(products[index]);
-      },
+    return Container(
+      padding: const EdgeInsets.fromLTRB(5, 0, 5, 10),
+      child: FutureBuilder(
+        future: _products,
+        builder: (context, snapshot) {
+          // 로딩중
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          // 에러
+          else if (snapshot.hasError) {
+            return Center(
+              child: Text("데이터 조회시 에러, 에러 발생"),
+            );
+          }
+          // 데이터 없음
+          else if (!snapshot.hasError && snapshot.data!.isEmpty) {
+            return Center(
+              child: Text("조회된 데이터가 없습니다."),
+            );
+          }
+          // 데이터 있음
+          else {
+            List<Map<String, dynamic>> productData = snapshot.data!;
+            return ListView.builder(
+              padding: EdgeInsets.all(10),
+              itemCount: productData.length,
+              itemBuilder: (context, index) {
+                final product = Product.fromMap(productData[index]);
+                return _buildProductCard(product);
+              },
+            );
+          }
+        },
+      ),
     );
   }
 
   // 개별 상품 카드 위젯
-  Widget _buildProductCard(Map<String, String> product) {
+  Widget _buildProductCard(Product product) {
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
@@ -104,15 +125,7 @@ class _MenuScreenState extends State<MenuScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // 상품 이미지
-            ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: Image.asset(
-                product["image"]!,
-                width: 70,  // 이미지 크기 조정
-                height: 70,
-                fit: BoxFit.cover,
-              ),
-            ),
+            ClipRRect(borderRadius: BorderRadius.circular(8), child: ImageWidget(id: product.id)),
             SizedBox(width: 10),
             // 상품 정보 (Column 사용)
             Expanded(
@@ -124,7 +137,7 @@ class _MenuScreenState extends State<MenuScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        product["name"]!,
+                        product.name,
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -132,7 +145,7 @@ class _MenuScreenState extends State<MenuScreen> {
                         overflow: TextOverflow.ellipsis,
                       ),
                       Text(
-                        product["price"]!,
+                        product.price as String,
                         style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.bold,
@@ -144,7 +157,7 @@ class _MenuScreenState extends State<MenuScreen> {
                   SizedBox(height: 6),
                   // 상품 설명
                   Text(
-                    product["description"]!,
+                    product.description,
                     style: TextStyle(color: Colors.grey[600], fontSize: 13),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
