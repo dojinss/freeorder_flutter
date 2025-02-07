@@ -7,6 +7,16 @@ import 'package:freeorder_flutter/screens/menu/menu_screen.dart';
 import 'package:freeorder_flutter/screens/order/order_screen.dart';
 import 'package:freeorder_flutter/screens/payment/payment_screen.dart';
 
+// 전역 설정 클래스
+class GlobalConfig extends ChangeNotifier {
+  Color primaryColor = Colors.blue;
+
+  void changeColor(Color newColor) {
+    primaryColor = newColor;
+    notifyListeners();
+  }
+}
+
 void main() {
   runApp(const MyApp());
 }
@@ -20,9 +30,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'freeorder',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          scaffoldBackgroundColor: Colors.white,
+          useMaterial3: true,
+          primaryColor: Color.fromRGBO(255, 102, 0, 1)),
       initialRoute: '/main',
       routes: {
         '/main': (context) => const MainScreen(),
