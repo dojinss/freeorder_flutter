@@ -110,62 +110,65 @@ class _MenuScreenState extends State<MenuScreen> {
       ),
     );
   }
-
+  
   // 개별 상품 카드 위젯
   Widget _buildProductCard(Product product) {
-    return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8),
-      ),
-      elevation: 2,
-      margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-      child: Padding(
-        padding: EdgeInsets.symmetric(vertical: 8, horizontal: 10),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // 상품 이미지
-            ClipRRect(borderRadius: BorderRadius.circular(8), child: ImageWidget(id: product.id)),
-            SizedBox(width: 10),
-            // 상품 정보 (Column 사용)
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // 상품 이름과 가격
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        product.name,
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
+    return GestureDetector(
+      onTap: () {},
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+        elevation: 2,
+        margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // 상품 이미지
+              ClipRRect(borderRadius: BorderRadius.circular(8), child: ImageWidget(id: product.id)),
+              SizedBox(width: 10),
+              // 상품 정보 (Column 사용)
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // 상품 이름과 가격
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          product.name,
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          overflow: TextOverflow.ellipsis,
                         ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      Text(
-                        product.price as String,
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.orange,
+                        Text(
+                          "${product.price}원",
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.orange,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 6),
-                  // 상품 설명
-                  Text(
-                    product.description,
-                    style: TextStyle(color: Colors.grey[600], fontSize: 13),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
+                      ],
+                    ),
+                    SizedBox(height: 6),
+                    // 상품 설명
+                    Text(
+                      product.description,
+                      style: TextStyle(color: Colors.grey[600], fontSize: 13),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

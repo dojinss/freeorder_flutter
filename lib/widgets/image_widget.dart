@@ -13,8 +13,12 @@ class ImageWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print("이미지 출력 - 상품 아이디 : $id");
     return CachedNetworkImage(
       imageUrl: getImgaeUrl(id),
+      width: 100,
+      height: 100,
+      fit: BoxFit.cover,
       placeholder: (context, url) => CircularProgressIndicator(),
       errorWidget: (context, url, error) => Icon(Icons.error),
     );

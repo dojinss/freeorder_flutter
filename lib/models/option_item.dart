@@ -54,8 +54,8 @@ class OptionItem {
       'quantity': quantity,
       'price': price,
       'seq': seq,
-      'createdAt': createdAt.millisecondsSinceEpoch,
-      'updatedAt': updatedAt.millisecondsSinceEpoch,
+      'createdAt': createdAt.toIso8601String(),
+      'updatedAt': updatedAt.toIso8601String(),
       'checked': checked,
     };
   }
@@ -68,9 +68,9 @@ class OptionItem {
       quantity: map['quantity'] as int,
       price: map['price'] as int,
       seq: map['seq'] as int,
-      createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt'] as int),
-      updatedAt: DateTime.fromMillisecondsSinceEpoch(map['updatedAt'] as int),
-      checked: map['checked'] as bool,
+      createdAt: map['createdAt'] != null ? DateTime.parse(map['createdAt']) : DateTime.now(),
+      updatedAt: map['updatedAt'] != null ? DateTime.parse(map['updatedAt']) : DateTime.now(),
+      checked: (map['checked'] as bool?) ?? false,
     );
   }
 
