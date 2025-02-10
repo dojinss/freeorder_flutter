@@ -7,7 +7,6 @@ class Product {
   String name;
   String categoriesId;
   String description;
-  String content;
   String productImg;
   int price;
   bool stockCheck;
@@ -27,7 +26,6 @@ class Product {
     required this.name,
     required this.categoriesId,
     required this.description,
-    required this.content,
     required this.productImg,
     required this.price,
     required this.stockCheck,
@@ -49,7 +47,6 @@ class Product {
     String? name,
     String? categoriesId,
     String? description,
-    String? content,
     String? productImg,
     int? price,
     bool? stockCheck,
@@ -70,7 +67,6 @@ class Product {
       name: name ?? this.name,
       categoriesId: categoriesId ?? this.categoriesId,
       description: description ?? this.description,
-      content: content ?? this.content,
       productImg: productImg ?? this.productImg,
       price: price ?? this.price,
       stockCheck: stockCheck ?? this.stockCheck,
@@ -94,14 +90,13 @@ class Product {
       'name': name,
       'categoriesId': categoriesId,
       'description': description,
-      'content': content,
       'productImg': productImg,
       'price': price,
       'stockCheck': stockCheck,
       'stock': stock,
       'seq': seq,
-      'createdAt': createdAt.millisecondsSinceEpoch,
-      'updatedAt': updatedAt.millisecondsSinceEpoch,
+      'createdAt': createdAt.toIso8601String(),
+      'updatedAt': updatedAt.toIso8601String(),
       'isPopular': isPopular,
       'isNew': isNew,
       'isRecommended': isRecommended,
@@ -113,25 +108,36 @@ class Product {
 
   factory Product.fromMap(Map<String, dynamic> map) {
     return Product(
-      id: map['id'] as String,
-      optionsId: map['optionsId'] as String,
-      name: map['name'] as String,
-      categoriesId: map['categoriesId'] as String,
-      description: map['description'] as String,
-      content: map['content'] as String,
-      productImg: map['productImg'] as String,
-      price: map['price'] as int,
-      stockCheck: map['stockCheck'] as bool,
-      stock: map['stock'] as int,
-      seq: map['seq'] as int,
-      createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt'] as int),
-      updatedAt: DateTime.fromMillisecondsSinceEpoch(map['updatedAt'] as int),
-      isPopular: map['isPopular'] as bool,
-      isNew: map['isNew'] as bool,
-      isRecommended: map['isRecommended'] as bool,
-      checkRecommend: map['checkRecommend'] as bool,
-      option: Option.fromMap(map['option'] as Map<String, dynamic>),
-      quantity: map['quantity'] as int,
+      id: (map['id'] as String?) ?? '',
+      optionsId: (map['optionsId'] as String?) ?? '',
+      name: (map['name'] as String?) ?? '',
+      categoriesId: (map['categoriesId'] as String?) ?? '',
+      description: (map['description'] as String?) ?? '',
+      productImg: (map['productImg'] as String?) ?? '',
+      price: (map['price'] as int?) ?? 0,
+      stockCheck: (map['stockCheck'] as bool?) ?? false,
+      stock: (map['stock'] as int?) ?? 0,
+      seq: (map['seq'] as int?) ?? 0,
+      createdAt: DateTime.parse(map['createdAt']),
+      updatedAt: DateTime.parse(map['updatedAt']),
+      isPopular: (map['isPopular'] as bool?) ?? false,
+      isNew: (map['isNew'] as bool?) ?? false,
+      isRecommended: (map['isRecommended'] as bool?) ?? false,
+      checkRecommend: (map['checkRecommend'] as bool?) ?? false,
+      option: map['option'] != null
+          ? Option.fromMap(map['option'] as Map<String, dynamic>)
+          : Option(
+              id: '',
+              name: '',
+              stockCheck: false,
+              stock: 0,
+              essential: false,
+              selectMin: 0,
+              selectMax: 0,
+              createdAt: DateTime.now(),
+              updatedAt: DateTime.now(),
+              itemList: List.empty()),
+      quantity: (map['quantity'] as int?) ?? 0,
     );
   }
 
@@ -141,7 +147,7 @@ class Product {
 
   @override
   String toString() {
-    return 'Product(id: $id, optionsId: $optionsId, name: $name, categoriesId: $categoriesId, description: $description, content: $content, productImg: $productImg, price: $price, stockCheck: $stockCheck, stock: $stock, seq: $seq, createdAt: $createdAt, updatedAt: $updatedAt, isPopular: $isPopular, isNew: $isNew, isRecommended: $isRecommended, checkRecommend: $checkRecommend, option: $option, quantity: $quantity)';
+    return 'Product(id: $id, optionsId: $optionsId, name: $name, categoriesId: $categoriesId, description: $description, productImg: $productImg, price: $price, stockCheck: $stockCheck, stock: $stock, seq: $seq, createdAt: $createdAt, updatedAt: $updatedAt, isPopular: $isPopular, isNew: $isNew, isRecommended: $isRecommended, checkRecommend: $checkRecommend, option: $option, quantity: $quantity)';
   }
 
   @override
@@ -153,7 +159,6 @@ class Product {
         other.name == name &&
         other.categoriesId == categoriesId &&
         other.description == description &&
-        other.content == content &&
         other.productImg == productImg &&
         other.price == price &&
         other.stockCheck == stockCheck &&
@@ -176,7 +181,6 @@ class Product {
         name.hashCode ^
         categoriesId.hashCode ^
         description.hashCode ^
-        content.hashCode ^
         productImg.hashCode ^
         price.hashCode ^
         stockCheck.hashCode ^
