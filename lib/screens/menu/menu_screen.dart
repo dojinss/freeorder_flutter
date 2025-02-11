@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:freeorder_flutter/models/product.dart';
+import 'package:freeorder_flutter/screens/menu/menu_detail_screen.dart';
 import 'package:freeorder_flutter/services/product_service.dart';
 import 'package:freeorder_flutter/widgets/image_widget.dart';
 
@@ -110,11 +111,17 @@ class _MenuScreenState extends State<MenuScreen> {
       ),
     );
   }
-  
+
   // 개별 상품 카드 위젯
   Widget _buildProductCard(Product product) {
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => MenuDetailScreen(productId: product.id)),
+        );
+      },
       child: Card(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
@@ -127,7 +134,9 @@ class _MenuScreenState extends State<MenuScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // 상품 이미지
-              ClipRRect(borderRadius: BorderRadius.circular(8), child: ImageWidget(id: product.id)),
+              ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: ImageWidget(id: product.id, width: 200, height: 200,)),
               SizedBox(width: 10),
               // 상품 정보 (Column 사용)
               Expanded(

@@ -8,7 +8,7 @@ class ImageWidget extends StatelessWidget {
 
   const ImageWidget({
     Key? key,
-    required this.id,
+    required this.id, required int width, required int height,
   }) : super(key: key);
 
   @override

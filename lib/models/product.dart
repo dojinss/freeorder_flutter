@@ -108,22 +108,26 @@ class Product {
 
   factory Product.fromMap(Map<String, dynamic> map) {
     return Product(
-      id: (map['id'] as String?) ?? '',
-      optionsId: (map['optionsId'] as String?) ?? '',
-      name: (map['name'] as String?) ?? '',
-      categoriesId: (map['categoriesId'] as String?) ?? '',
-      description: (map['description'] as String?) ?? '',
-      productImg: (map['productImg'] as String?) ?? '',
-      price: (map['price'] as int?) ?? 0,
-      stockCheck: (map['stockCheck'] as bool?) ?? false,
-      stock: (map['stock'] as int?) ?? 0,
-      seq: (map['seq'] as int?) ?? 0,
-      createdAt: DateTime.parse(map['createdAt']),
-      updatedAt: DateTime.parse(map['updatedAt']),
-      isPopular: (map['isPopular'] as bool?) ?? false,
-      isNew: (map['isNew'] as bool?) ?? false,
-      isRecommended: (map['isRecommended'] as bool?) ?? false,
-      checkRecommend: (map['checkRecommend'] as bool?) ?? false,
+      id: map['id'] as String? ?? '',
+      optionsId: map['optionsId'] as String? ?? '',
+      name: map['name'] as String? ?? '',
+      categoriesId: map['categoriesId'] as String? ?? '',
+      description: map['description'] as String? ?? '',
+      productImg: map['productImg'] as String? ?? '',
+      price: (map['price'] as num?)?.toInt() ?? 0, // price를 num으로 받고 toInt() 변환
+      stockCheck: map['stockCheck'] as bool? ?? false,
+      stock: map['stock'] as int? ?? 0,
+      seq: map['seq'] as int? ?? 0,
+      createdAt: map['createdAt'] != null
+          ? DateTime.parse(map['createdAt'])
+          : DateTime.now(),
+      updatedAt: map['updatedAt'] != null
+          ? DateTime.parse(map['updatedAt'])
+          : DateTime.now(),
+      isPopular: map['isPopular'] as bool? ?? false,
+      isNew: map['isNew'] as bool? ?? false,
+      isRecommended: map['isRecommended'] as bool? ?? false,
+      checkRecommend: map['checkRecommend'] as bool? ?? false,
       option: map['option'] != null
           ? Option.fromMap(map['option'] as Map<String, dynamic>)
           : Option(
@@ -136,14 +140,16 @@ class Product {
               selectMax: 0,
               createdAt: DateTime.now(),
               updatedAt: DateTime.now(),
-              itemList: List.empty()),
-      quantity: (map['quantity'] as int?) ?? 0,
+              itemList: [],
+            ),
+      quantity: map['quantity'] as int? ?? 0,
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory Product.fromJson(String source) => Product.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory Product.fromJson(String source) =>
+      Product.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   String toString() {
