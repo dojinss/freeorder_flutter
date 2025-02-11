@@ -23,19 +23,24 @@ class ProductService {
 
   // 데이터 단일 조회
   Future<Map<String, dynamic>?> select(String id) async {
-    var product;
     try {
       var response = await dio.get('$URL/$id');
-      print(":::::reponse - body ::::::");
       var data = response.data;
-      if (data.containsKey("product") && data["product"] is Map<String, dynamic>) {
-        product = data["product"] as Map<String, dynamic>;
+
+      print("::::: Response Data :::::");
+      print(data);
+
+      // 🔵 최상위 데이터가 곧 product 데이터이므로 그대로 반환
+      if (data is Map<String, dynamic>) {
+        print("✅ Valid Map received.");
+        return data; // 🔥 여기서 data 전체를 반환해야 함
+      } else {
+        print("⚠️ Warning: Invalid data format.");
       }
-      print(product);
     } catch (e) {
-      print(e);
+      print("❌ API 요청 실패: $e");
     }
-    return product;
+    return null;
   }
 
   // 데이터 등록

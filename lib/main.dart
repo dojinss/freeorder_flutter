@@ -7,7 +7,7 @@ import 'package:freeorder_flutter/screens/order/order_detail_screen.dart';
 import 'package:freeorder_flutter/screens/order/order_screen.dart';
 import 'package:freeorder_flutter/screens/payment/payment_screen.dart';
 
-// 전역 설정 클래스
+// 전역 설정 클래스...
 class GlobalConfig extends ChangeNotifier {
   Color primaryColor = Colors.blue;
 
@@ -39,7 +39,9 @@ class MyApp extends StatelessWidget {
       routes: {
         '/main': (context) => const MainScreen(),
         '/menu/list': (context) => const MenuScreen(),
-        '/menu/detail': (context) => const MenuDetailScreen(),
+        '/menu/detail': (context) => const MenuDetailScreen(
+              productId: '',
+            ),
         '/cart/list': (context) => const CartScreen(),
         '/order/list': (context) => const OrderScreen(),
         '/order/detail': (context) => const OrderDetailScreen(),
