@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:freeorder_flutter/screens/cart/cart_detail_screen.dart';
 import 'package:freeorder_flutter/screens/cart/cart_screen.dart';
 import 'package:freeorder_flutter/screens/main_screen.dart';
 import 'package:freeorder_flutter/screens/menu/menu_detail_screen.dart';
@@ -42,7 +41,6 @@ class MyApp extends StatelessWidget {
         '/menu/list': (context) => const MenuScreen(),
         '/menu/detail': (context) => const MenuDetailScreen(),
         '/cart/list': (context) => const CartScreen(),
-        '/cart/detail': (context) => const CartDetailScreen(),
         '/order/list': (context) => const OrderScreen(),
         '/order/detail': (context) => const OrderDetailScreen(),
         '/payment/pay': (context) => const PaymentScreen(),
