@@ -37,13 +37,20 @@ class _MenuScreenState extends State<MenuScreen> {
           ),
           leading: IconButton(
             icon: Icon(Icons.arrow_circle_left_outlined),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.pop(context);
+            },
             iconSize: 30,
             padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
           ),
           actions: [
             IconButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pushReplacementNamed(
+                  context,
+                  "/cart/list",
+                );
+              },
               icon: Icon(Icons.shopping_cart),
               iconSize: 35,
             ),
