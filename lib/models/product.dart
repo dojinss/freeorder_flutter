@@ -118,12 +118,8 @@ class Product {
       stockCheck: map['stockCheck'] as bool? ?? false,
       stock: map['stock'] as int? ?? 0,
       seq: map['seq'] as int? ?? 0,
-      createdAt: map['createdAt'] != null
-          ? DateTime.parse(map['createdAt'])
-          : DateTime.now(),
-      updatedAt: map['updatedAt'] != null
-          ? DateTime.parse(map['updatedAt'])
-          : DateTime.now(),
+      createdAt: map['createdAt'] != null ? DateTime.parse(map['createdAt']) : DateTime.now(),
+      updatedAt: map['updatedAt'] != null ? DateTime.parse(map['updatedAt']) : DateTime.now(),
       isPopular: map['isPopular'] as bool? ?? false,
       isNew: map['isNew'] as bool? ?? false,
       isRecommended: map['isRecommended'] as bool? ?? false,
@@ -148,8 +144,7 @@ class Product {
 
   String toJson() => json.encode(toMap());
 
-  factory Product.fromJson(String source) =>
-      Product.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory Product.fromJson(String source) => Product.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   String toString() {
