@@ -181,153 +181,8 @@ class _CartScreenState extends State<CartScreen> {
           },
         ),
         centerTitle: false,
-        title: const Text("장바구니", style: TextStyle(fontWeight: FontWeight.bold)),
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                "메인메뉴",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              const Divider(),
-
-              // 첫 번째 메뉴
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: Image.asset(
-                    'assets/images/menu1.jpg',
-                    width: 60,
-                    height: 60,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                title: const Text("김치찌개"),
-                subtitle: const Text("가격: 8,000원 | 수량: 1개"),
-                // 옵션변경 버튼
-                trailing: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    ElevatedButton(
-                      style: (ElevatedButton.styleFrom(
-                          backgroundColor: const Color.fromARGB(255, 197, 197, 197), minimumSize: const Size(100, 30))),
-                      onPressed: _showMenu,
-                      child: const Text(
-                        "옵션변경",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ),
-                    // SizedBox(width: 50),
-                    // ElevatedButton(
-                    //   style: ElevatedButton.styleFrom(
-                    //     backgroundColor: Colors.redAccent,
-                    //     minimumSize: const Size(100, 30),
-                    //   ),
-                      //   onPressed: _deleteItem,
-                    //   child: const Text(
-                    //     "삭제하기",
-                    //     style: TextStyle(
-                    //       fontWeight: FontWeight.bold,
-                    //       color: Colors.white,
-                    //     ),
-                    //   ),
-                    // ),
-                  ],
-                ),
-              ),
-              const Divider(),
-
-              // 두 번째 메뉴
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: Image.asset(
-                    'assets/images/menu2.jpg',
-                    width: 60,
-                    height: 60,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                title: const Text("떡볶이"),
-                subtitle: const Text("가격: 7,000원 | 수량: 1개"),
-                // 옵션변경 버튼
-                trailing: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    ElevatedButton(
-                      style: (ElevatedButton.styleFrom(
-                          backgroundColor: const Color.fromARGB(255, 197, 197, 197), minimumSize: const Size(100, 30))),
-                      onPressed: _showMenu,
-                      child: const Text(
-                        "옵션변경",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const Divider(),
-
-              // 세 번째 메뉴
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: Image.asset(
-                    'assets/images/menu3.jpg',
-                    width: 60,
-                    height: 60,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                title: const Text("네란버거"),
-                subtitle: const Text("가격: 5,500원 | 수량: 1개"),
-                // 옵션변경 버튼
-                trailing: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    ElevatedButton(
-                      style: (ElevatedButton.styleFrom(
-                          backgroundColor: const Color.fromARGB(255, 197, 197, 197), minimumSize: const Size(100, 30))),
-                      onPressed: _showMenu,
-                      child: const Text(
-                        "옵션변경",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const Divider(),
-            ],
-          ),
-        elevation: 0,
-        title: const Text(
-          "장바구니",
-          style: TextStyle(color: Colors.black, fontSize: 30),
-        ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_circle_left_outlined),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          iconSize: 30,
-        ),
+        title:
+            const Text("장바구니", style: TextStyle(fontWeight: FontWeight.bold)),
       ),
       body: Container(
         padding: const EdgeInsets.fromLTRB(5, 0, 5, 10),
@@ -350,7 +205,10 @@ class _CartScreenState extends State<CartScreen> {
                 final cart = cartItems[index];
 
                 // 옵션이 있을 경우 표시
-                String optionsText = (cart['options'] != null && cart['options'].isNotEmpty) ? cart['options'].join(', ') : "옵션 없음";
+                String optionsText =
+                    (cart['options'] != null && cart['options'].isNotEmpty)
+                        ? cart['options'].join(', ')
+                        : "옵션 없음";
 
                 return _buildCartItem(cart, optionsText);
               },
@@ -381,7 +239,8 @@ class _CartScreenState extends State<CartScreen> {
                 width: 80,
                 height: 80,
                 color: Colors.grey[300],
-                child: const Icon(Icons.shopping_bag, size: 40, color: Colors.grey),
+                child: const Icon(Icons.shopping_bag,
+                    size: 40, color: Colors.grey),
               ),
             ),
             const SizedBox(width: 10),
