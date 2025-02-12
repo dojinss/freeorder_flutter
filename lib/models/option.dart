@@ -61,28 +61,30 @@ class Option {
       'essential': essential,
       'selectMin': selectMin,
       'selectMax': selectMax,
-      'createdAt': createdAt.millisecondsSinceEpoch,
-      'updatedAt': updatedAt.millisecondsSinceEpoch,
+      'createdAt': createdAt.toIso8601String(),
+      'updatedAt': updatedAt.toIso8601String(),
       'itemList': itemList.map((x) => x.toMap()).toList(),
     };
   }
 
   factory Option.fromMap(Map<String, dynamic> map) {
     return Option(
-      id: map['id'] as String,
-      name: map['name'] as String,
-      stockCheck: map['stockCheck'] as bool,
-      stock: map['stock'] as int,
-      essential: map['essential'] as bool,
-      selectMin: map['selectMin'] as int,
-      selectMax: map['selectMax'] as int,
-      createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt'] as int),
-      updatedAt: DateTime.fromMillisecondsSinceEpoch(map['updatedAt'] as int),
-      itemList: List<OptionItem>.from(
-        (map['itemList'] as List<int>).map<OptionItem>(
-          (x) => OptionItem.fromMap(x as Map<String, dynamic>),
-        ),
-      ),
+      id: (map['id'] as String?) ?? '',
+      name: (map['name'] as String?) ?? '',
+      stockCheck: (map['stockCheck'] as bool?) ?? false,
+      stock: (map['stock'] as int?) ?? 0,
+      essential: (map['essential'] as bool?) ?? false,
+      selectMin: (map['selectMin'] as int?) ?? 0,
+      selectMax: (map['selectMax'] as int?) ?? 0,
+      createdAt: map['createdAt'] != null ? DateTime.parse(map['createdAt']) : DateTime.now(),
+      updatedAt: map['updatedAt'] != null ? DateTime.parse(map['updatedAt']) : DateTime.now(),
+      itemList: map['itemList'] != null
+          ? List<OptionItem>.from(
+              (map['itemList'] as List<dynamic>).map<OptionItem>(
+                (x) => OptionItem.fromMap(x as Map<String, dynamic>),
+              ),
+            )
+          : List.empty(),
     );
   }
 
