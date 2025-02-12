@@ -57,14 +57,18 @@ class CartOption {
 
   factory CartOption.fromMap(Map<String, dynamic> map) {
     return CartOption(
-      id: map['id'] as String,
-      cartsId: map['cartsId'] as String,
-      usersId: map['usersId'] as String,
-      optionItemsId: map['optionItemsId'] as String,
-      name: map['name'] as String,
-      price: map['price'] as int,
-      createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt'] as int),
-      updatedAt: DateTime.fromMillisecondsSinceEpoch(map['updatedAt'] as int),
+      id: map['id'] as String? ?? '',
+      cartsId: map['cartsId'] as String? ?? '',
+      usersId: map['usersId'] as String? ?? '',
+      optionItemsId: map['optionItemsId'] as String? ?? '',
+      name: map['name'] as String? ?? '',
+      price: map['price'] is String
+          ? int.tryParse(map['price'] as String) ?? 0 // String을 int로 안전하게 변환
+          : map['price'] as int? ?? 0, // 이미 int일 경우 그대로 사용
+      createdAt:
+          map['createdAt'] != null && map['createdAt'] is int ? DateTime.fromMillisecondsSinceEpoch(map['createdAt'] as int) : DateTime.now(),
+      updatedAt:
+          map['updatedAt'] != null && map['updatedAt'] is int ? DateTime.fromMillisecondsSinceEpoch(map['updatedAt'] as int) : DateTime.now(),
     );
   }
 

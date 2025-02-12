@@ -69,17 +69,17 @@ class Cart {
 
   factory Cart.fromMap(Map<String, dynamic> map) {
     return Cart(
-      id: map['id'] as String,
-      productsId: map['productsId'] as String,
-      usersId: map['usersId'] as String,
-      optionsId: map['optionsId'] as String,
-      productName: map['productName'] as String,
-      amount: map['amount'] as int,
-      price: map['price'] as int,
-      createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt'] as int),
-      updatedAt: DateTime.fromMillisecondsSinceEpoch(map['updatedAt'] as int),
+      id: map['id'] as String? ?? '', // null일 경우 빈 문자열로 대체
+      productsId: map['productsId'] as String? ?? '',
+      usersId: map['usersId'] as String? ?? '',
+      optionsId: map['optionsId'] as String? ?? '',
+      productName: map['productName'] as String? ?? '',
+      amount: map['amount'] as int? ?? 0, // 기본값 0 설정
+      price: map['price'] as int? ?? 0, // 기본값 0 설정
+      createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt'] as int? ?? 0),
+      updatedAt: DateTime.fromMillisecondsSinceEpoch(map['updatedAt'] as int? ?? 0),
       optionList: List<CartOption>.from(
-        (map['optionList'] as List<int>).map<CartOption>(
+        (map['optionList'] as List<dynamic>? ?? []).map<CartOption>(
           (x) => CartOption.fromMap(x as Map<String, dynamic>),
         ),
       ),

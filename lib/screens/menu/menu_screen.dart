@@ -14,11 +14,11 @@ class MenuScreen extends StatefulWidget {
 class _MenuScreenState extends State<MenuScreen> {
   // 상품 데이터
   late Future<List<Map<String, dynamic>>> _products;
-  final productServcie = ProductService();
+  final productService = ProductService();
   @override
   void initState() {
     super.initState();
-    _products = productServcie.list();
+    _products = productService.list();
   }
 
   @override
@@ -81,29 +81,22 @@ class _MenuScreenState extends State<MenuScreen> {
   Widget _buildProductList() {
     return Container(
       padding: const EdgeInsets.fromLTRB(5, 0, 5, 10),
-      child: FutureBuilder(
+      child: FutureBuilder<List<Map<String, dynamic>>>(
         future: _products,
         builder: (context, snapshot) {
-          // 로딩중
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
               child: CircularProgressIndicator(),
             );
-          }
-          // 에러
-          else if (snapshot.hasError) {
+          } else if (snapshot.hasError) {
             return Center(
-              child: Text("데이터 조회시 에러, 에러 발생"),
+              child: Text("데이터 조회시 에러 발생"),
             );
-          }
-          // 데이터 없음
-          else if (!snapshot.hasError && snapshot.data!.isEmpty) {
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
             return Center(
               child: Text("조회된 데이터가 없습니다."),
             );
-          }
-          // 데이터 있음
-          else {
+          } else {
             List<Map<String, dynamic>> productData = snapshot.data!;
             return ListView.builder(
               padding: EdgeInsets.all(10),
@@ -125,8 +118,7 @@ class _MenuScreenState extends State<MenuScreen> {
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(
-              builder: (context) => MenuDetailScreen(productId: product.id)),
+          MaterialPageRoute(builder: (context) => MenuDetailScreen(productId: product.id)),
         );
       },
       child: Card(
@@ -141,9 +133,7 @@ class _MenuScreenState extends State<MenuScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // 상품 이미지
-              ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: ImageWidget(id: product.id, width: 200, height: 200,)),
+              ClipRRect(borderRadius: BorderRadius.circular(8), child: ImageWidget(id: product.id, width: 200, height: 200)),
               SizedBox(width: 10),
               // 상품 정보 (Column 사용)
               Expanded(
@@ -155,7 +145,7 @@ class _MenuScreenState extends State<MenuScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          product.name,
+                          product.name.isNotEmpty ? product.name : '기본 상품명', // 상품명이 비어있을 때 처리
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
@@ -175,7 +165,7 @@ class _MenuScreenState extends State<MenuScreen> {
                     SizedBox(height: 6),
                     // 상품 설명
                     Text(
-                      product.description,
+                      product.description.isNotEmpty ? product.description : "상품 설명이 없습니다.", // 설명이 비어있을 때 처리
                       style: TextStyle(color: Colors.grey[600], fontSize: 13),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
