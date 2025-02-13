@@ -76,8 +76,12 @@ class Cart {
       productName: map['productName'] as String? ?? '',
       amount: map['amount'] as int? ?? 0, // 기본값 0 설정
       price: map['price'] as int? ?? 0, // 기본값 0 설정
-      createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt'] as int? ?? 0),
-      updatedAt: DateTime.fromMillisecondsSinceEpoch(map['updatedAt'] as int? ?? 0),
+      createdAt: map['createdAt'] != null
+          ? (map['createdAt'] is int ? DateTime.fromMillisecondsSinceEpoch(map['createdAt']) : DateTime.parse(map['createdAt']))
+          : DateTime.now(),
+      updatedAt: map['updatedAt'] != null
+          ? (map['updatedAt'] is int ? DateTime.fromMillisecondsSinceEpoch(map['updatedAt']) : DateTime.parse(map['updatedAt']))
+          : DateTime.now(),
       optionList: List<CartOption>.from(
         (map['optionList'] as List<dynamic>? ?? []).map<CartOption>(
           (x) => CartOption.fromMap(x as Map<String, dynamic>),
