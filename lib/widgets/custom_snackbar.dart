@@ -15,7 +15,7 @@ class CustomSnackbar {
     this.color = Colors.white,
     this.backgroundColor = Colors.blueAccent,
     EdgeInsets? margin, // nullable로 변경
-  }) : margin = margin ?? const EdgeInsets.fromLTRB(0, 0, 0, 73); // 초기화 리스트에서 기본값 설정
+  }) : margin = margin ?? const EdgeInsets.fromLTRB(0, 0, 0, 5); // 초기화 리스트에서 기본값 설정
 
   void showSnackBar(BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(

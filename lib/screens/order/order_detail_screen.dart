@@ -53,7 +53,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                   ),
                 ),
                 Divider(),
-                Container(
+                SizedBox(
                   width: double.infinity,
                   child: Card(
                     elevation: 2.0,
@@ -67,8 +67,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                         children: [
                           Text(
                             "메뉴 이름: $name",
-                            style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold),
+                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                           ),
                           SizedBox(height: 8),
                           Text(
@@ -99,15 +98,11 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                     children: [
                       Text(
                         "총 가격:",
-                        style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
+                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                       ),
                       Text(
                         '$totalPrice 원',
-                        style: TextStyle(
-                            fontSize: 18,
-                            color: Colors.red,
-                            fontWeight: FontWeight.bold),
+                        style: TextStyle(fontSize: 18, color: Colors.red, fontWeight: FontWeight.bold),
                       ),
                     ],
                   ),

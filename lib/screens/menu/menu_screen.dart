@@ -46,10 +46,8 @@ class _MenuScreenState extends State<MenuScreen> {
           actions: [
             IconButton(
               onPressed: () {
-                Navigator.pushReplacementNamed(
-                  context,
-                  "/cart/list",
-                );
+                debugPrint("장바구니로 이동");
+                Navigator.pushNamed(context, "/cart/list");
               },
               icon: Icon(Icons.shopping_cart),
               iconSize: 35,
@@ -133,7 +131,7 @@ class _MenuScreenState extends State<MenuScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // 상품 이미지
-              ClipRRect(borderRadius: BorderRadius.circular(8), child: ImageWidget(id: product.id, width: 200, height: 200)),
+              ClipRRect(borderRadius: BorderRadius.circular(8), child: ImageWidget(id: product.id, width: 100, height: 100)),
               SizedBox(width: 10),
               // 상품 정보 (Column 사용)
               Expanded(
