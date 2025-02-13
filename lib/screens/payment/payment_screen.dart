@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:freeorder_flutter/models/payment.dart';
 
 class PaymentScreen extends StatefulWidget {
   const PaymentScreen({super.key});
