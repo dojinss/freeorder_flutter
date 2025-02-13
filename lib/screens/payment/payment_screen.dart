@@ -1,104 +1,52 @@
 import 'package:flutter/material.dart';
-import 'package:tosspayments_widget_sdk_flutter/model/payment_info.dart';
-import 'package:tosspayments_widget_sdk_flutter/model/payment_widget_options.dart';
-import 'package:tosspayments_widget_sdk_flutter/payment_widget.dart';
-import 'package:tosspayments_widget_sdk_flutter/widgets/agreement.dart';
-import 'package:tosspayments_widget_sdk_flutter/widgets/payment_method.dart';
+import 'package:freeorder_flutter/models/payment.dart';
 
-class PaymentScreen extends StatelessWidget {
+class PaymentScreen extends StatefulWidget {
   const PaymentScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: PaymentWidgetExamplePage(),
-    );
-  }
+  State<PaymentScreen> createState() => _PaymentScreenState();
 }
 
-class PaymentWidgetExamplePage extends StatefulWidget {
-  const PaymentWidgetExamplePage({super.key});
-
-  @override
-  State<PaymentWidgetExamplePage> createState() {
-    return _PaymentWidgetExamplePageState();
-  }
-}
-
-class _PaymentWidgetExamplePageState extends State<PaymentWidgetExamplePage> {
-  late PaymentWidget _paymentWidget;
-  PaymentMethodWidgetControl? _paymentMethodWidgetControl;
-  AgreementWidgetControl? _agreementWidgetControl;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _paymentWidget = PaymentWidget(
-      clientKey: "test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm",
-      customerKey: "vSxmvSPBeyJ-4IJkvGSAx",
-      // 결제위젯에 브랜드페이 추가하기
-      // paymentWidgetOptions: PaymentWidgetOptions(brandPayOption: BrandPayOption("리다이렉트 URL")) // Access Token 발급에 사용되는 리다이렉트 URL
-    );
-
-    _paymentWidget
-        .renderPaymentMethods(
-          selector: 'methods',
-          amount: Amount(value: 300, currency: Currency.KRW, country: "KR"),
-          options: RenderPaymentMethodsOptions(variantKey: "DEFAULT")
-        ).then((control) {
-      _paymentMethodWidgetControl = control;
-    });
-
-    _paymentWidget
-      .renderAgreement(selector: 'agreement')
-      .then((control) {
-        _agreementWidgetControl = control;
-    });
-  }
-
+class _PaymentScreenState extends State<PaymentScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: Column(children: [
-      Expanded(
-          child: ListView(children: [
-        PaymentMethodWidget(
-          paymentWidget: _paymentWidget,
-          selector: 'methods',
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image(image: AssetImage("images/payComplete.png"), width: 300),
+            SizedBox(height: 50),
+            Text(
+              "결제 완료!",
+              style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 100),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pushReplacementNamed(context, "/menu/list");
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color.fromARGB(255, 255, 100, 50),
+                minimumSize: const Size(double.infinity, 60),
+              ),
+              child: const Text("OK", style: TextStyle(fontSize: 20, color: Colors.white)),
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pushReplacementNamed(context, "/order/list");
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color.fromARGB(255, 255, 100, 50),
+                minimumSize: const Size(double.infinity, 60),
+              ),
+              child: const Text("결제내역", style: TextStyle(fontSize: 20, color: Colors.white)),
+            ),
+          ],
         ),
-        AgreementWidget(paymentWidget: _paymentWidget, selector: 'agreement'),
-        ElevatedButton(
-            onPressed: () async {
-              final paymentResult = await _paymentWidget.requestPayment(
-                  paymentInfo: const PaymentInfo(orderId: 'F5wirkluqIX21Mid9Ay0h', orderName: '토스 티셔츠 외 2건'));
-              if (paymentResult.success != null) {
-                // 결제 성공 처리
-              } else if (paymentResult.fail != null) {
-                // 결제 실패 처리
-              }
-            },
-            child: const Text('결제하기')),
-        ElevatedButton(
-            onPressed: () async {
-              final selectedPaymentMethod = await _paymentMethodWidgetControl?.getSelectedPaymentMethod();
-              print('${selectedPaymentMethod?.method} ${selectedPaymentMethod?.easyPay?.provider ?? ''}');
-            },
-            child: const Text('선택한 결제수단 출력')),
-        ElevatedButton(
-            onPressed: () async {
-              final agreementStatus = await _agreementWidgetControl?.getAgreementStatus();
-              print('${agreementStatus?.agreedRequiredTerms}');
-            },
-            child: const Text('약관 동의 상태 출력')),
-        ElevatedButton(
-            onPressed: () async {
-              await _paymentMethodWidgetControl?.updateAmount(amount: 300);
-              print('결제 금액이 300원으로 변경되었습니다.');
-            },
-            child: const Text('결제 금액 변경'))
-      ]))
-    ])));
+      ),
+    );
   }
 }
