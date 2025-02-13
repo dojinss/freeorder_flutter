@@ -5,6 +5,7 @@ import 'package:freeorder_flutter/screens/menu/menu_detail_screen.dart';
 import 'package:freeorder_flutter/screens/menu/menu_screen.dart';
 import 'package:freeorder_flutter/screens/order/order_detail_screen.dart';
 import 'package:freeorder_flutter/screens/order/order_screen.dart';
+import 'package:freeorder_flutter/screens/payment/payment_fail_screen.dart';
 import 'package:freeorder_flutter/screens/payment/payment_screen.dart';
 
 // 전역 설정 클래스...
@@ -45,7 +46,8 @@ class MyApp extends StatelessWidget {
         '/cart/list': (context) => const CartScreen(),
         '/order/list': (context) => const OrderScreen(),
         '/order/detail': (context) => const OrderDetailScreen(),
-        '/payment/pay': (context) => const PaymentScreen(),
+        '/payment/pay/success': (context) => const PaymentSuccessScreen(),
+        '/payment/pay/fail': (context) => const PaymentFailScreen(),
       },
     );
   }
