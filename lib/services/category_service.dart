@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 class CategoryService {
   // 테이블 이름
-  final String url = 'http://10.0.2.2:8080/qr/categories';
+  final String url = 'http://localhost:8080/qr/categories';
   final Dio dio = Dio();
 
   // 데이터 목록 조회

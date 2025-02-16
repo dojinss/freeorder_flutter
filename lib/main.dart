@@ -6,13 +6,12 @@ import 'package:freeorder_flutter/screens/menu/menu_detail_screen.dart';
 import 'package:freeorder_flutter/screens/menu/menu_screen.dart';
 import 'package:freeorder_flutter/screens/order/order_detail_screen.dart';
 import 'package:freeorder_flutter/screens/order/order_screen.dart';
-import 'package:freeorder_flutter/screens/payment/payment_fail_screen.dart';
 import 'package:freeorder_flutter/screens/payment/payment_screen.dart';
 import 'package:provider/provider.dart';
 
 // 전역 설정 클래스...
 class GlobalConfig extends ChangeNotifier {
-  Color primaryColor = Colors.blue;
+  Color primaryColor = Color.fromRGBO(255, 102, 0, 1);
 
   void changeColor(Color newColor) {
     primaryColor = newColor;
@@ -20,13 +19,17 @@ class GlobalConfig extends ChangeNotifier {
   }
 }
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final userProvider = UserProvider();
+  await userProvider.checkId(); // ✅ 유저 ID 설정
+  await userProvider.loadCartItemCount(); // ✅ 장바구니 개수 초기화
+  debugPrint("장바구니 개수 초기화 : ${userProvider.cartItemCount}");
   runApp(ChangeNotifierProvider(
     create: (context) => UserProvider(),
     child: const MyApp(),
   ));
 }
-// 테스트
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -47,37 +50,44 @@ class MyApp extends StatelessWidget {
         switch (settings.name) {
           case "/":
             return PageRouteBuilder(
-              pageBuilder: (context, animation, secondaryAnimation) => MainScreen(),
+              pageBuilder: (context, animation, secondaryAnimation) =>
+                  MainScreen(),
               transitionDuration: Duration(seconds: 0),
             );
           case "/menu/list":
             return PageRouteBuilder(
-              pageBuilder: (context, animation, secondaryAnimation) => MenuScreen(),
+              pageBuilder: (context, animation, secondaryAnimation) =>
+                  MenuScreen(),
               transitionDuration: Duration(seconds: 0),
             );
           case "/menu/detail/{id}":
             return PageRouteBuilder(
-              pageBuilder: (context, animation, secondaryAnimation) => MenuDetailScreen(productId: ''),
+              pageBuilder: (context, animation, secondaryAnimation) =>
+                  MenuDetailScreen(productId: ''),
               transitionDuration: Duration(seconds: 0),
             );
           case "/cart/list":
             return PageRouteBuilder(
-              pageBuilder: (context, animation, secondaryAnimation) => CartScreen(),
+              pageBuilder: (context, animation, secondaryAnimation) =>
+                  CartScreen(),
               transitionDuration: Duration(seconds: 0),
             );
           case "/order/list":
             return PageRouteBuilder(
-              pageBuilder: (context, animation, secondaryAnimation) => OrderScreen(),
+              pageBuilder: (context, animation, secondaryAnimation) =>
+                  OrderScreen(),
               transitionDuration: Duration(seconds: 0),
             );
           case "/order/detail":
             return PageRouteBuilder(
-              pageBuilder: (context, animation, secondaryAnimation) => OrderDetailScreen(),
+              pageBuilder: (context, animation, secondaryAnimation) =>
+                  OrderDetailScreen(),
               transitionDuration: Duration(seconds: 0),
             );
-          case "/payment/pay":
+          case "/payment":
             return PageRouteBuilder(
-              pageBuilder: (context, animation, secondaryAnimation) => PaymentScreen(),
+              pageBuilder: (context, animation, secondaryAnimation) =>
+                  PaymentScreen(),
               transitionDuration: Duration(seconds: 0),
             );
         }

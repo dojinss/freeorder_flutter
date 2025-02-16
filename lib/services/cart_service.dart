@@ -6,7 +6,7 @@ import 'package:freeorder_flutter/models/product.dart';
 
 class CartService {
   // 테이블 이름
-  final String url = 'http://10.0.2.2:8080/qr/carts';
+  final String url = 'http://localhost:8080/qr/carts';
   final Dio dio = Dio();
 
   // 데이터 목록 조회
@@ -120,6 +120,27 @@ class CartService {
         debugPrint("장바구니 삭제 성공");
       } else {
         debugPrint("장바구니 삭제 실패!");
+      }
+    } catch (e) {
+      debugPrint("$e");
+    }
+    return result;
+  }
+
+  // 데이터 전체체 삭제
+  Future<int> deleteAll(String id) async {
+    int result = 0;
+    debugPrint("$url/all/$id");
+    try {
+      var response = await dio.delete('$url/all/$id');
+      debugPrint(":::::response - body ::::::");
+      debugPrint("${response.data}");
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        result = 1;
+        debugPrint("장바구니 전체체 삭제 성공");
+      } else {
+        debugPrint("장바구니 전체 삭제 실패!");
       }
     } catch (e) {
       debugPrint("$e");
