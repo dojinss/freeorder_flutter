@@ -40,8 +40,8 @@ class Category {
       'name': name,
       'code': code,
       'seq': seq,
-      'createdAt': createdAt.millisecondsSinceEpoch,
-      'updatedAt': updatedAt.millisecondsSinceEpoch,
+      'createdAt': createdAt.toIso8601String(),
+      'updatedAt': updatedAt.toIso8601String(),
     };
   }
 
@@ -49,16 +49,21 @@ class Category {
     return Category(
       id: map['id'] as String,
       name: map['name'] as String,
-      code: map['code'] as String,
-      seq: map['seq'] as int,
-      createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt'] as int),
-      updatedAt: DateTime.fromMillisecondsSinceEpoch(map['updatedAt'] as int),
+      code: (map['code'] as String?) ?? '',
+      seq: (map['seq'] as int?) ?? 0,
+      createdAt: map['createdAt'] is int
+          ? DateTime.fromMillisecondsSinceEpoch(map['createdAt'])
+          : DateTime.parse(map['createdAt']),
+      updatedAt: map['updatedAt'] is int
+          ? DateTime.fromMillisecondsSinceEpoch(map['updatedAt'])
+          : DateTime.parse(map['updatedAt']),
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory Category.fromJson(String source) => Category.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory Category.fromJson(String source) =>
+      Category.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   String toString() {
@@ -79,6 +84,11 @@ class Category {
 
   @override
   int get hashCode {
-    return id.hashCode ^ name.hashCode ^ code.hashCode ^ seq.hashCode ^ createdAt.hashCode ^ updatedAt.hashCode;
+    return id.hashCode ^
+        name.hashCode ^
+        code.hashCode ^
+        seq.hashCode ^
+        createdAt.hashCode ^
+        updatedAt.hashCode;
   }
 }
