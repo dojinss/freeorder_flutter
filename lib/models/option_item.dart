@@ -1,15 +1,16 @@
 import 'dart:convert';
 
 class OptionItem {
-  String id;
-  String optionsId;
-  String name;
-  int quantity;
-  int price;
-  int seq;
-  DateTime createdAt;
-  DateTime updatedAt;
+  final String id;
+  final String optionsId;
+  final String name;
+  final int quantity;
+  final int price;
+  final int seq;
+  final DateTime createdAt;
+  final DateTime updatedAt;
   bool checked;
+
   OptionItem({
     required this.id,
     required this.optionsId,
@@ -19,7 +20,7 @@ class OptionItem {
     required this.seq,
     required this.createdAt,
     required this.updatedAt,
-    required this.checked,
+    this.checked = false, // 기본값 false
   });
 
   OptionItem copyWith({
@@ -42,12 +43,12 @@ class OptionItem {
       seq: seq ?? this.seq,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
-      checked: checked ?? this.checked,
+      checked: checked ?? this.checked, // null이면 기존 값 유지
     );
   }
 
   Map<String, dynamic> toMap() {
-    return <String, dynamic>{
+    return {
       'id': id,
       'optionsId': optionsId,
       'name': name,
@@ -62,21 +63,21 @@ class OptionItem {
 
   factory OptionItem.fromMap(Map<String, dynamic> map) {
     return OptionItem(
-      id: map['id'] as String,
-      optionsId: map['optionsId'] as String,
-      name: map['name'] as String,
-      quantity: map['quantity'] as int,
-      price: map['price'] as int,
-      seq: map['seq'] as int,
-      createdAt: map['createdAt'] != null ? DateTime.parse(map['createdAt']) : DateTime.now(),
-      updatedAt: map['updatedAt'] != null ? DateTime.parse(map['updatedAt']) : DateTime.now(),
-      checked: (map['checked'] as bool?) ?? false,
+      id: map['id'] ?? '',
+      optionsId: map['optionsId'] ?? '',
+      name: map['name'] ?? '',
+      quantity: map['quantity'] ?? 0,
+      price: map['price'] ?? 0,
+      seq: map['seq'] ?? 0,
+      createdAt: DateTime.tryParse(map['createdAt'].toString()) ?? DateTime.now(),
+      updatedAt: DateTime.tryParse(map['updatedAt'].toString()) ?? DateTime.now(),
+      checked: map['checked'] == true, // `null` 또는 `false`일 경우 `false` 유지
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory OptionItem.fromJson(String source) => OptionItem.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory OptionItem.fromJson(String source) => OptionItem.fromMap(json.decode(source));
 
   @override
   String toString() {

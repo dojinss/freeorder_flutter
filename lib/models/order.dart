@@ -93,11 +93,11 @@ class Order {
       totalCount: map['totalCount'] as int,
       totalPrice: map['totalPrice'] as int,
       status: map['status'] as String,
-      orderedAt: DateTime.fromMillisecondsSinceEpoch(map['orderedAt'] as int),
-      createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt'] as int),
-      updatedAt: DateTime.fromMillisecondsSinceEpoch(map['updatedAt'] as int),
+      orderedAt: map['orderedAt'] is int ? DateTime.fromMillisecondsSinceEpoch(map['orderedAt']) : DateTime.parse(map['orderedAt']),
+      createdAt: map['createdAt'] is int ? DateTime.fromMillisecondsSinceEpoch(map['createdAt']) : DateTime.parse(map['createdAt']),
+      updatedAt: map['updatedAt'] is int ? DateTime.fromMillisecondsSinceEpoch(map['updatedAt']) : DateTime.parse(map['updatedAt']),
       itemList: List<OrderItem>.from(
-        (map['itemList'] as List<int>).map<OrderItem>(
+        (map['itemList']).map<OrderItem>(
           (x) => OrderItem.fromMap(x as Map<String, dynamic>),
         ),
       ),

@@ -33,3 +33,29 @@ freeorder_flutter.iml
 
 freeorder_flutter_android.iml
 freeorder_flutter_app_android.iml
+linux/flutter/generated_plugin_registrant.cc
+linux/flutter/generated_plugin_registrant.h
+windows/flutter/generated_plugin_registrant.cc
+windows/flutter/generated_plugin_registrant.h
+windows/flutter/generated_plugins.cmake
+.vscode/settings.json
+.metadata
+.vscode/settings.json
+
+# 환경 변수 및 설정 파일 무시
+android/local.properties
+pubspec.lock
+
+# Flutter 빌드 파일 무시
+.DS_Store
+.dart_tool/
+.build/
+.idea/
+.vscode/
+*.iml
+
+# Gradle 캐시 무시
+android/.gradle/
+android/gradlew
+android/gradlew.bat
+android/gradle/wrapper/

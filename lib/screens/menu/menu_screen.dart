@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:freeorder_flutter/models/category.dart';
 import 'package:freeorder_flutter/models/product.dart';
+import 'package:freeorder_flutter/provider/user_provider.dart';
 import 'package:freeorder_flutter/screens/menu/menu_detail_screen.dart';
+import 'package:freeorder_flutter/services/category_service.dart';
 import 'package:freeorder_flutter/services/product_service.dart';
 import 'package:freeorder_flutter/widgets/image_widget.dart';
+import 'package:provider/provider.dart';
 
 class MenuScreen extends StatefulWidget {
   const MenuScreen({super.key});
@@ -12,94 +16,157 @@ class MenuScreen extends StatefulWidget {
 }
 
 class _MenuScreenState extends State<MenuScreen> {
-  // 상품 데이터
   late Future<List<Map<String, dynamic>>> _products;
   final productService = ProductService();
+  final CategoryService _categoryService = CategoryService();
+
+  List<Category> _cateList = [];
+  bool _isLoading = true;
+
   @override
   void initState() {
     super.initState();
-    _products = productService.list();
+    _fetchCategories();
+    _loadProduct("all");
+    Future.microtask(() {
+      final userProvider = Provider.of<UserProvider>(context, listen: false);
+      userProvider.loadCartItemCount(); // ✅ 장바구니 개수 다시 불러오기
+    });
+  }
+
+  // ✅ 카테고리 목록 불러오기
+  Future<void> _fetchCategories() async {
+    try {
+      List<Map<String, dynamic>> categoryData = await _categoryService.list();
+      debugPrint("카테고리 조회 : $categoryData");
+      setState(() {
+        _cateList = categoryData.map((e) => Category.fromMap(e)).toList();
+        _isLoading = false;
+      });
+    } catch (error) {
+      debugPrint("카테고리 불러오기 오류: $error");
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  // ✅ 상품 데이터 불러오기
+  void _loadProduct(String id) {
+    setState(() {
+      _products = id == "all" ? productService.list() : productService.listByCate(id);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 3, // 탭 개수
-      child: Scaffold(
-        appBar: AppBar(
-          elevation: 0,
-          title: Text(
-            "메뉴",
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: 30,
+    return _isLoading
+        ? Scaffold(body: Center(child: CircularProgressIndicator()))
+        : DefaultTabController(
+            length: _cateList.length + 1,
+            child: Scaffold(
+              appBar: AppBar(
+                elevation: 0,
+                title: const Text(
+                  "메뉴",
+                  style: TextStyle(color: Colors.black, fontSize: 30),
+                ),
+                leading: IconButton(
+                  icon: const Icon(Icons.arrow_circle_left_outlined),
+                  onPressed: () => Navigator.pop(context),
+                  iconSize: 30,
+                ),
+                actions: [
+                  IconButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, "/order/list");
+                    },
+                    icon: Icon(Icons.receipt_long_rounded),
+                    iconSize: 35,
+                  ),
+                  Consumer<UserProvider>(
+                    builder: (context, userProvider, child) {
+                      return Stack(
+                        children: [
+                          IconButton(
+                            onPressed: () => Navigator.pushNamed(context, "/cart/list"),
+                            icon: const Icon(Icons.shopping_cart),
+                            iconSize: 35,
+                          ),
+                          if (!userProvider.isCartLoaded) // ✅ 로딩 중이면 빈 값 표시
+                            Positioned(
+                              right: 5,
+                              top: 5,
+                              child: SizedBox(
+                                width: 15,
+                                height: 15,
+                                child: CircularProgressIndicator(strokeWidth: 2), // ✅ 로딩 중 표시
+                              ),
+                            )
+                          else if (userProvider.cartItemCount > 0) // ✅ 장바구니 개수 반영
+                            Positioned(
+                              right: 5,
+                              top: 5,
+                              child: Container(
+                                padding: const EdgeInsets.all(2),
+                                decoration: BoxDecoration(
+                                  color: Colors.red,
+                                  borderRadius: BorderRadius.circular(7),
+                                ),
+                                constraints: const BoxConstraints(
+                                  minWidth: 15,
+                                  minHeight: 15,
+                                ),
+                                child: Text(
+                                  "${userProvider.cartItemCount}",
+                                  style: const TextStyle(color: Colors.white, fontSize: 10),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ),
+                        ],
+                      );
+                    },
+                  ),
+                ],
+                bottom: TabBar(
+                  labelColor: Colors.orange,
+                  unselectedLabelColor: Colors.grey,
+                  indicatorColor: Colors.orangeAccent,
+                  tabs: [
+                    const Tab(text: "전체"),
+                    ..._cateList.map((category) => Tab(text: category.name)),
+                  ],
+                ),
+              ),
+              body: TabBarView(
+                children: [
+                  _buildProductList("all"),
+                  ..._cateList.map((category) => _buildProductList(category.id)),
+                ],
+              ),
             ),
-          ),
-          leading: IconButton(
-            icon: Icon(Icons.arrow_circle_left_outlined),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            iconSize: 30,
-            padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
-          ),
-          actions: [
-            IconButton(
-              onPressed: () {
-                Navigator.pushReplacementNamed(
-                  context,
-                  "/cart/list",
-                );
-              },
-              icon: Icon(Icons.shopping_cart),
-              iconSize: 35,
-            ),
-          ],
-          bottom: TabBar(
-            labelColor: Colors.orange,
-            unselectedLabelColor: Colors.grey,
-            indicatorColor: Colors.orangeAccent,
-            tabs: [
-              Tab(text: "전체"),
-              Tab(text: "베스트"),
-              Tab(text: "신상품"),
-            ],
-          ),
-        ),
-        body: TabBarView(
-          children: [
-            _buildProductList(), // 전체 상품
-            _buildProductList(), // 베스트 상품
-            _buildProductList(), // 신상품
-          ],
-        ),
-      ),
-    );
+          );
   }
 
-  // 상품 리스트를 빌드하는 함수
-  Widget _buildProductList() {
+  // ✅ 상품 리스트를 빌드하는 함수
+  Widget _buildProductList(String id) {
+    _loadProduct(id);
     return Container(
       padding: const EdgeInsets.fromLTRB(5, 0, 5, 10),
       child: FutureBuilder<List<Map<String, dynamic>>>(
         future: _products,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
+            return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            return Center(
-              child: Text("데이터 조회시 에러 발생"),
-            );
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(
-              child: Text("조회된 데이터가 없습니다."),
-            );
+            return const Center(child: Text("데이터 조회 중 오류 발생"));
+          } else if (snapshot.data == null || snapshot.data!.isEmpty) {
+            return const Center(child: Text("조회된 데이터가 없습니다."));
           } else {
             List<Map<String, dynamic>> productData = snapshot.data!;
             return ListView.builder(
-              padding: EdgeInsets.all(10),
+              padding: const EdgeInsets.all(10),
               itemCount: productData.length,
               itemBuilder: (context, index) {
                 final product = Product.fromMap(productData[index]);
@@ -112,7 +179,7 @@ class _MenuScreenState extends State<MenuScreen> {
     );
   }
 
-  // 개별 상품 카드 위젯
+  // ✅ 개별 상품 카드 위젯
   Widget _buildProductCard(Product product) {
     return GestureDetector(
       onTap: () {
@@ -122,50 +189,40 @@ class _MenuScreenState extends State<MenuScreen> {
         );
       },
       child: Card(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         elevation: 2,
-        margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+        margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
         child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 상품 이미지
-              ClipRRect(borderRadius: BorderRadius.circular(8), child: ImageWidget(id: product.id, width: 200, height: 200)),
-              SizedBox(width: 10),
-              // 상품 정보 (Column 사용)
+              ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: ImageWidget(id: product.id, width: 100, height: 100),
+              ),
+              const SizedBox(width: 10),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // 상품 이름과 가격
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          product.name.isNotEmpty ? product.name : '기본 상품명', // 상품명이 비어있을 때 처리
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
+                          product.name.isNotEmpty ? product.name : '기본 상품명',
+                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                           overflow: TextOverflow.ellipsis,
                         ),
                         Text(
                           "${product.price}원",
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.orange,
-                          ),
+                          style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.orange),
                         ),
                       ],
                     ),
-                    SizedBox(height: 6),
-                    // 상품 설명
+                    const SizedBox(height: 6),
                     Text(
-                      product.description.isNotEmpty ? product.description : "상품 설명이 없습니다.", // 설명이 비어있을 때 처리
+                      product.description.isNotEmpty ? product.description : "상품 설명이 없습니다.",
                       style: TextStyle(color: Colors.grey[600], fontSize: 13),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,

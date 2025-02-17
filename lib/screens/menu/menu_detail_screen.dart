@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:freeorder_flutter/models/cart.dart';
 import 'package:freeorder_flutter/models/product.dart';
-import 'package:freeorder_flutter/services/product_service.dart';
+import 'package:freeorder_flutter/provider/user_provider.dart';
 import 'package:freeorder_flutter/services/cart_service.dart'; // CartService 추가
+import 'package:freeorder_flutter/services/product_service.dart';
+import 'package:freeorder_flutter/widgets/custom_snackbar.dart';
 import 'package:freeorder_flutter/widgets/image_widget.dart';
-import 'package:uuid/uuid.dart';
-import 'package:freeorder_flutter/services/user_service.dart'; // UserService 추가
+import 'package:provider/provider.dart';
 
 class MenuDetailScreen extends StatefulWidget {
   final String productId;
@@ -20,7 +20,6 @@ class _MenuDetailScreenState extends State<MenuDetailScreen> {
   late Future<Map<String, dynamic>?> _product; // Future<Map<String, dynamic>?>로 수정
   final productService = ProductService();
   final cartService = CartService(); // CartService 인스턴스 추가
-  final userService = UserService(); // UserService 인스턴스 추가
   Map<String, bool> selectedOptions = {}; // 옵션 선택 상태 저장
   int _quantity = 1; // 초기 수량 (최소 1개)
 
@@ -32,7 +31,7 @@ class _MenuDetailScreenState extends State<MenuDetailScreen> {
 
   Future<Map<String, dynamic>?> _fetchProduct() async {
     final productData = await productService.select(widget.productId);
-    print("Fetched Product Data: $productData"); // 응답된 데이터 로그 출력
+    debugPrint("상품 정보 : $productData"); // 응답된 데이터 로그 출력
     return productData;
   }
 
@@ -54,7 +53,7 @@ class _MenuDetailScreenState extends State<MenuDetailScreen> {
           }
 
           final productData = snapshot.data!;
-          final product = Product.fromMap(productData); // Map을 Product로 변환
+          var product = Product.fromMap(productData); // Map을 Product로 변환
 
           return Padding(
             padding: const EdgeInsets.all(16.0),
@@ -139,21 +138,21 @@ class _MenuDetailScreenState extends State<MenuDetailScreen> {
                 const SizedBox(height: 20),
 
                 // 옵션 리스트 (있을 경우만)
-                if (product.option != null && product.option!.itemList.isNotEmpty) ...[
+                if (product.option.itemList.isNotEmpty) ...[
                   const Text(
                     "옵션 선택",
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 10),
-
-                  // 옵션 체크박스 리스트
                   Column(
-                    children: product.option!.itemList.map((optionItem) {
+                    children: product.option.itemList.map((optionItem) {
                       return CheckboxListTile(
                         title: Text("${optionItem.name} (+${optionItem.price}원)"),
-                        value: selectedOptions[optionItem.id] ?? false,
+                        value: selectedOptions[optionItem.id] ?? false, // 모델 내부의 체크 상태 변수 사용
                         onChanged: (bool? value) {
+                          debugPrint("체크값 : $value");
                           setState(() {
+                            // selectedOptions 맵을 업데이트하여 UI 반영
                             selectedOptions[optionItem.id] = value ?? false;
                           });
                         },
@@ -166,6 +165,17 @@ class _MenuDetailScreenState extends State<MenuDetailScreen> {
                 // 장바구니 담기 버튼
                 ElevatedButton(
                   onPressed: () {
+                    // setState로 itemList의 checked 값 반영된 후 addToCart 호출
+                    setState(() {
+                      product.option.itemList = product.option.itemList.map((item) {
+                        // 체크박스 상태를 반영해서 새로운 객체로 갱신
+                        if (selectedOptions[item.id] != null) {
+                          return item.copyWith(checked: selectedOptions[item.id]!);
+                        }
+                        return item;
+                      }).toList();
+                    });
+                    Provider.of<UserProvider>(context, listen: false).incrementCartItem(); // ✅ 개수 증가
                     _addToCart(product);
                   },
                   style: ElevatedButton.styleFrom(
@@ -182,39 +192,29 @@ class _MenuDetailScreenState extends State<MenuDetailScreen> {
     );
   }
 
-  void _addToCart(Product product) async {
-    final selectedItems = product.option.itemList.where((item) => selectedOptions[item.id] == true).toList() ?? [];
-
-    // 장바구니에 추가할 데이터 생성
-    Map<String, dynamic> cartItem = {
-      'id': product.id,
-      'productName': product.name,
-      'price': product.price * _quantity + selectedItems.fold(0, (sum, item) => sum + item.price),
-      'amount': _quantity,
-      'optionList': selectedItems.map((e) => e.toMap()).toList(),
-    };
-
-    print("Generated cartItem: $cartItem"); // 로그 추가
-
-    // Map을 Cart 객체로 변환
-    Cart cart = Cart.fromMap(cartItem);
-    cart.usersId = await userService.getUserId(); // 사용자 아이디를 비동기로 가져오기
+  void _addToCart(product) async {
+    UserProvider userProvider = Provider.of<UserProvider>(context, listen: false);
+    await userProvider.checkId();
+    String usersId = userProvider.getUsersId;
+    debugPrint("장바구니 추가 - 아이디 : $usersId");
+    // 수량 입력
+    product.quantity = _quantity;
 
     // 로그로 Cart 객체 확인
-    print("Cart object: $cart");
+    debugPrint("장바구니에 입력할 상품 : $product", wrapWidth: 1024);
 
     try {
       // CartService에 장바구니 추가
-      await cartService.insert(cart); // 비동기 호출 시 await 사용
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("장바구니에 추가되었습니다!")),
-      );
+      await cartService.insert(product); // 비동기 호출 시 await 사용
+      Navigator.pop(context);
+      CustomSnackbar(text: "장바구니에 상품이 추가되었습니다.").showSnackBar(context);
     } catch (e) {
       // 예외 처리
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("장바구니 추가 실패: $e")),
-      );
+      CustomSnackbar(
+        text: "장바구니에 상품 추가에 실패하였습니다.",
+        backgroundColor: Colors.redAccent,
+        color: Colors.white,
+      ).showSnackBar(context);
     }
   }
 }

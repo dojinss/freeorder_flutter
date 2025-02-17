@@ -11,3 +11,4 @@ MainActivity.kt
 key.properties
 **/*.keystore
 **/*.jks
+/android/local.properties
