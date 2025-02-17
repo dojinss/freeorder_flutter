@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:freeorder_flutter/models/cart.dart';
 import 'package:freeorder_flutter/models/product.dart';
 import 'package:freeorder_flutter/provider/user_provider.dart';
 import 'package:freeorder_flutter/services/cart_service.dart'; // CartService 추가
@@ -18,8 +17,7 @@ class MenuDetailScreen extends StatefulWidget {
 }
 
 class _MenuDetailScreenState extends State<MenuDetailScreen> {
-  late Future<Map<String, dynamic>?>
-      _product; // Future<Map<String, dynamic>?>로 수정
+  late Future<Map<String, dynamic>?> _product; // Future<Map<String, dynamic>?>로 수정
   final productService = ProductService();
   final cartService = CartService(); // CartService 인스턴스 추가
   Map<String, bool> selectedOptions = {}; // 옵션 선택 상태 저장
@@ -50,9 +48,7 @@ class _MenuDetailScreenState extends State<MenuDetailScreen> {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError ||
-              !snapshot.hasData ||
-              snapshot.data == null) {
+          } else if (snapshot.hasError || !snapshot.hasData || snapshot.data == null) {
             return const Center(child: Text("상품 정보를 불러올 수 없습니다."));
           }
 
@@ -65,32 +61,24 @@ class _MenuDetailScreenState extends State<MenuDetailScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // 상품 이미지
-                Center(
-                    child:
-                        ImageWidget(id: product.id, width: 200, height: 200)),
+                Center(child: ImageWidget(id: product.id, width: 200, height: 200)),
                 const SizedBox(height: 20),
 
                 // 상품명 & 가격
                 Text(
                   product.name,
-                  style: const TextStyle(
-                      fontSize: 22, fontWeight: FontWeight.bold),
+                  style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 8),
                 Text(
                   "${product.price}원",
-                  style: const TextStyle(
-                      fontSize: 18,
-                      color: Colors.orange,
-                      fontWeight: FontWeight.bold),
+                  style: const TextStyle(fontSize: 18, color: Colors.orange, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 8),
 
                 // 상품 설명 추가
                 Text(
-                  product.description.isNotEmpty
-                      ? product.description
-                      : "상품 설명이 없습니다.",
+                  product.description.isNotEmpty ? product.description : "상품 설명이 없습니다.",
                   style: TextStyle(fontSize: 16, color: Colors.grey[700]),
                 ),
                 const SizedBox(height: 20),
@@ -101,8 +89,7 @@ class _MenuDetailScreenState extends State<MenuDetailScreen> {
                   children: [
                     const Text(
                       "수량",
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     Row(
                       children: [
@@ -117,20 +104,16 @@ class _MenuDetailScreenState extends State<MenuDetailScreen> {
                               : null,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.orange,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8)),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                             minimumSize: const Size(20, 30),
                           ),
-                          child: const Text("-",
-                              style:
-                                  TextStyle(fontSize: 15, color: Colors.white)),
+                          child: const Text("-", style: TextStyle(fontSize: 15, color: Colors.white)),
                         ),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 12),
                           child: Text(
                             '$_quantity',
-                            style: const TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold),
+                            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                           ),
                         ),
                         // "+" 버튼
@@ -142,13 +125,10 @@ class _MenuDetailScreenState extends State<MenuDetailScreen> {
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.orange,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8)),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                             minimumSize: const Size(20, 30),
                           ),
-                          child: const Text("+",
-                              style:
-                                  TextStyle(fontSize: 15, color: Colors.white)),
+                          child: const Text("+", style: TextStyle(fontSize: 15, color: Colors.white)),
                         ),
                       ],
                     ),
@@ -167,10 +147,8 @@ class _MenuDetailScreenState extends State<MenuDetailScreen> {
                   Column(
                     children: product.option.itemList.map((optionItem) {
                       return CheckboxListTile(
-                        title:
-                            Text("${optionItem.name} (+${optionItem.price}원)"),
-                        value: selectedOptions[optionItem.id] ??
-                            false, // 모델 내부의 체크 상태 변수 사용
+                        title: Text("${optionItem.name} (+${optionItem.price}원)"),
+                        value: selectedOptions[optionItem.id] ?? false, // 모델 내부의 체크 상태 변수 사용
                         onChanged: (bool? value) {
                           debugPrint("체크값 : $value");
                           setState(() {
@@ -189,12 +167,10 @@ class _MenuDetailScreenState extends State<MenuDetailScreen> {
                   onPressed: () {
                     // setState로 itemList의 checked 값 반영된 후 addToCart 호출
                     setState(() {
-                      product.option.itemList =
-                          product.option.itemList.map((item) {
+                      product.option.itemList = product.option.itemList.map((item) {
                         // 체크박스 상태를 반영해서 새로운 객체로 갱신
                         if (selectedOptions[item.id] != null) {
-                          return item.copyWith(
-                              checked: selectedOptions[item.id]!);
+                          return item.copyWith(checked: selectedOptions[item.id]!);
                         }
                         return item;
                       }).toList();
@@ -206,8 +182,7 @@ class _MenuDetailScreenState extends State<MenuDetailScreen> {
                     backgroundColor: Colors.orange,
                     minimumSize: const Size(double.infinity, 50),
                   ),
-                  child: const Text("장바구니 담기",
-                      style: TextStyle(fontSize: 18, color: Colors.white)),
+                  child: const Text("장바구니 담기", style: TextStyle(fontSize: 18, color: Colors.white)),
                 ),
               ],
             ),
@@ -218,8 +193,7 @@ class _MenuDetailScreenState extends State<MenuDetailScreen> {
   }
 
   void _addToCart(product) async {
-    UserProvider userProvider =
-        Provider.of<UserProvider>(context, listen: false);
+    UserProvider userProvider = Provider.of<UserProvider>(context, listen: false);
     await userProvider.checkId();
     String usersId = userProvider.getUsersId;
     debugPrint("장바구니 추가 - 아이디 : $usersId");

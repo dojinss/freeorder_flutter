@@ -6,7 +6,7 @@ import 'package:freeorder_flutter/models/product.dart';
 
 class CartService {
   // 테이블 이름
-  final String url = 'http://localhost:8080/qr/carts';
+  final String url = 'http://10.0.2.2:8080/qr/carts';
   final Dio dio = Dio();
 
   // 데이터 목록 조회

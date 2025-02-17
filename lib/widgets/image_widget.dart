@@ -2,8 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class ImageWidget extends StatefulWidget {
-  final String productURL = "http://localhost:8080/pimg?id=";
-  final String noticeURL = "http://localhost:8080/timg?id=";
+  final String productURL = "http://10.0.2.2:8080/pimg?id=";
+  final String noticeURL = "http://10.0.2.2:8080/timg?id=";
   final String id;
   final double width;
   final double height;

@@ -66,26 +66,30 @@ class OrderItem {
       'quantity': quantity,
       'price': price,
       'amount': amount,
-      'createdAt': createdAt.millisecondsSinceEpoch,
-      'updatedAt': updatedAt.millisecondsSinceEpoch,
+      'createdAt': createdAt.toIso8601String(),
+      'updatedAt': updatedAt.toIso8601String(),
       'optionList': optionList.map((x) => x.toMap()).toList(),
     };
   }
 
   factory OrderItem.fromMap(Map<String, dynamic> map) {
     return OrderItem(
-      id: map['id'] as String,
-      ordersId: map['ordersId'] as String,
-      productsId: map['productsId'] as String,
-      optionsId: map['optionsId'] as String,
-      name: map['name'] as String,
-      quantity: map['quantity'] as int,
-      price: map['price'] as int,
-      amount: map['amount'] as int,
-      createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt'] as int),
-      updatedAt: DateTime.fromMillisecondsSinceEpoch(map['updatedAt'] as int),
+      id: (map['id'] as String?) ?? '',
+      ordersId: (map['ordersId'] as String?) ?? '',
+      productsId: (map['productsId'] as String?) ?? '',
+      optionsId: (map['optionsId'] as String?) ?? '',
+      name: (map['name'] as String?) ?? '',
+      quantity: (map['quantity'] as int?) ?? 0,
+      price: (map['price'] as int?) ?? 0,
+      amount: (map['amount'] as int?) ?? 0,
+      createdAt: (map['createdAt'] ?? DateTime.now()) is int
+          ? DateTime.fromMillisecondsSinceEpoch(map['createdAt'] ?? 0)
+          : (map['createdAt'] != null ? DateTime.parse(map['createdAt']) : DateTime.now()),
+      updatedAt: map['updatedAt'] is int
+          ? DateTime.fromMillisecondsSinceEpoch(map['updatedAt'] ?? 0)
+          : (map['updatedAt'] != null ? DateTime.parse(map['updatedAt']) : DateTime.now()),
       optionList: List<OrderOption>.from(
-        (map['optionList'] as List<int>).map<OrderOption>(
+        (map['optionList']).map<OrderOption>(
           (x) => OrderOption.fromMap(x as Map<String, dynamic>),
         ),
       ),

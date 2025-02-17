@@ -54,8 +54,7 @@ class _MenuScreenState extends State<MenuScreen> {
   // ✅ 상품 데이터 불러오기
   void _loadProduct(String id) {
     setState(() {
-      _products =
-          id == "all" ? productService.list() : productService.listByCate(id);
+      _products = id == "all" ? productService.list() : productService.listByCate(id);
     });
   }
 
@@ -78,13 +77,19 @@ class _MenuScreenState extends State<MenuScreen> {
                   iconSize: 30,
                 ),
                 actions: [
+                  IconButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, "/order/list");
+                    },
+                    icon: Icon(Icons.receipt_long_rounded),
+                    iconSize: 35,
+                  ),
                   Consumer<UserProvider>(
                     builder: (context, userProvider, child) {
                       return Stack(
                         children: [
                           IconButton(
-                            onPressed: () =>
-                                Navigator.pushNamed(context, "/cart/list"),
+                            onPressed: () => Navigator.pushNamed(context, "/cart/list"),
                             icon: const Icon(Icons.shopping_cart),
                             iconSize: 35,
                           ),
@@ -95,12 +100,10 @@ class _MenuScreenState extends State<MenuScreen> {
                               child: SizedBox(
                                 width: 15,
                                 height: 15,
-                                child: CircularProgressIndicator(
-                                    strokeWidth: 2), // ✅ 로딩 중 표시
+                                child: CircularProgressIndicator(strokeWidth: 2), // ✅ 로딩 중 표시
                               ),
                             )
-                          else if (userProvider.cartItemCount >
-                              0) // ✅ 장바구니 개수 반영
+                          else if (userProvider.cartItemCount > 0) // ✅ 장바구니 개수 반영
                             Positioned(
                               right: 5,
                               top: 5,
@@ -116,8 +119,7 @@ class _MenuScreenState extends State<MenuScreen> {
                                 ),
                                 child: Text(
                                   "${userProvider.cartItemCount}",
-                                  style: const TextStyle(
-                                      color: Colors.white, fontSize: 10),
+                                  style: const TextStyle(color: Colors.white, fontSize: 10),
                                   textAlign: TextAlign.center,
                                 ),
                               ),
@@ -140,8 +142,7 @@ class _MenuScreenState extends State<MenuScreen> {
               body: TabBarView(
                 children: [
                   _buildProductList("all"),
-                  ..._cateList
-                      .map((category) => _buildProductList(category.id)),
+                  ..._cateList.map((category) => _buildProductList(category.id)),
                 ],
               ),
             ),
@@ -184,8 +185,7 @@ class _MenuScreenState extends State<MenuScreen> {
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(
-              builder: (context) => MenuDetailScreen(productId: product.id)),
+          MaterialPageRoute(builder: (context) => MenuDetailScreen(productId: product.id)),
         );
       },
       child: Card(
@@ -211,24 +211,18 @@ class _MenuScreenState extends State<MenuScreen> {
                       children: [
                         Text(
                           product.name.isNotEmpty ? product.name : '기본 상품명',
-                          style: const TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold),
+                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                           overflow: TextOverflow.ellipsis,
                         ),
                         Text(
                           "${product.price}원",
-                          style: const TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.orange),
+                          style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.orange),
                         ),
                       ],
                     ),
                     const SizedBox(height: 6),
                     Text(
-                      product.description.isNotEmpty
-                          ? product.description
-                          : "상품 설명이 없습니다.",
+                      product.description.isNotEmpty ? product.description : "상품 설명이 없습니다.",
                       style: TextStyle(color: Colors.grey[600], fontSize: 13),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
