@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:freeorder_flutter/models/order.dart';
 import 'package:freeorder_flutter/provider/user_provider.dart';
 import 'package:freeorder_flutter/screens/cart/cart_screen.dart';
 import 'package:freeorder_flutter/screens/main_screen.dart';
@@ -50,44 +51,39 @@ class MyApp extends StatelessWidget {
         switch (settings.name) {
           case "/":
             return PageRouteBuilder(
-              pageBuilder: (context, animation, secondaryAnimation) =>
-                  MainScreen(),
+              pageBuilder: (context, animation, secondaryAnimation) => MainScreen(),
               transitionDuration: Duration(seconds: 0),
             );
           case "/menu/list":
             return PageRouteBuilder(
-              pageBuilder: (context, animation, secondaryAnimation) =>
-                  MenuScreen(),
+              pageBuilder: (context, animation, secondaryAnimation) => MenuScreen(),
               transitionDuration: Duration(seconds: 0),
             );
           case "/menu/detail/{id}":
             return PageRouteBuilder(
-              pageBuilder: (context, animation, secondaryAnimation) =>
-                  MenuDetailScreen(productId: ''),
+              pageBuilder: (context, animation, secondaryAnimation) => MenuDetailScreen(productId: ''),
               transitionDuration: Duration(seconds: 0),
             );
           case "/cart/list":
             return PageRouteBuilder(
-              pageBuilder: (context, animation, secondaryAnimation) =>
-                  CartScreen(),
+              pageBuilder: (context, animation, secondaryAnimation) => CartScreen(),
               transitionDuration: Duration(seconds: 0),
             );
           case "/order/list":
             return PageRouteBuilder(
-              pageBuilder: (context, animation, secondaryAnimation) =>
-                  OrderScreen(),
+              pageBuilder: (context, animation, secondaryAnimation) => OrderScreen(),
               transitionDuration: Duration(seconds: 0),
             );
           case "/order/detail":
             return PageRouteBuilder(
-              pageBuilder: (context, animation, secondaryAnimation) =>
-                  OrderDetailScreen(),
+              pageBuilder: (context, animation, secondaryAnimation) => OrderDetailScreen(
+                order: settings.arguments as Order,
+              ),
               transitionDuration: Duration(seconds: 0),
             );
           case "/payment":
             return PageRouteBuilder(
-              pageBuilder: (context, animation, secondaryAnimation) =>
-                  PaymentScreen(),
+              pageBuilder: (context, animation, secondaryAnimation) => PaymentScreen(),
               transitionDuration: Duration(seconds: 0),
             );
         }

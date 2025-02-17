@@ -4,7 +4,7 @@ import 'package:freeorder_flutter/models/product.dart';
 
 class ProductService {
   // 테이블 이름
-  final String url = 'http://localhost:8080/qr/products';
+  final String url = 'http://10.0.2.2:8080/qr/products';
   final Dio dio = Dio();
 
   // 데이터 목록 조회
@@ -21,6 +21,7 @@ class ProductService {
     }
     return list;
   }
+
   // 데이터 목록 카테고리별 조회
   Future<List<Map<String, dynamic>>> listByCate(String id) async {
     var list = List<Map<String, dynamic>>.empty();
