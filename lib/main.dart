@@ -5,8 +5,14 @@ import 'package:freeorder_flutter/screens/menu/menu_detail_screen.dart';
 import 'package:freeorder_flutter/screens/menu/menu_screen.dart';
 import 'package:freeorder_flutter/screens/order/order_detail_screen.dart';
 import 'package:freeorder_flutter/screens/order/order_screen.dart';
+import 'package:freeorder_flutter/screens/payment/home.dart';
+import 'package:freeorder_flutter/screens/payment/payment.dart';
 import 'package:freeorder_flutter/screens/payment/payment_fail_screen.dart';
 import 'package:freeorder_flutter/screens/payment/payment_screen.dart';
+import 'package:freeorder_flutter/screens/payment/payment_success_screen.dart';
+import 'package:freeorder_flutter/screens/payment/result.dart';
+import 'package:get/get.dart';
+import 'package:tosspayments_widget_sdk_flutter/model/tosspayments_result.dart';
 
 // 전역 설정 클래스...
 class GlobalConfig extends ChangeNotifier {
@@ -28,7 +34,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'freeorder',
       theme: ThemeData(
@@ -36,7 +42,7 @@ class MyApp extends StatelessWidget {
           scaffoldBackgroundColor: Colors.white,
           useMaterial3: true,
           primaryColor: Color.fromRGBO(255, 102, 0, 1)),
-      initialRoute: '/main',
+      initialRoute: '/payment',
       routes: {
         '/main': (context) => const MainScreen(),
         '/menu/list': (context) => const MenuScreen(),
@@ -46,8 +52,10 @@ class MyApp extends StatelessWidget {
         '/cart/list': (context) => const CartScreen(),
         '/order/list': (context) => const OrderScreen(),
         '/order/detail': (context) => const OrderDetailScreen(),
-        '/payment/pay/success': (context) => const PaymentSuccessScreen(),
-        '/payment/pay/fail': (context) => const PaymentFailScreen(),
+        '/payment':(context) => const Home(),
+        // '/payment/pay/success': (context) => const PaymentSuccessScreen(),
+        // '/payment/pay/fail': (context) => const PaymentFailScreen(),
+        '/result':(context) => const ResultPage()
       },
     );
   }

@@ -1,25 +1,34 @@
 import 'dart:io';
 
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:freeorder_flutter/screens/payment/payment.dart';
 import 'package:freeorder_flutter/screens/payment/payment_widget_example_page.dart';
 import 'package:freeorder_flutter/utils/config.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:tosspayments_widget_sdk_flutter/model/payment_info.dart';
 import 'package:tosspayments_widget_sdk_flutter/model/payment_widget_options.dart';
 
-class PaymentScreen extends StatefulWidget {
-  const PaymentScreen({super.key});
+/// [WidgetHome] 위젯은 사용자에게 결제 수단 및 주문 관련 정보를 입력받아
+/// 결제를 시작하는 화면을 제공합니다.
+class WidgetHome extends StatefulWidget {
+  /// 기본 생성자입니다.
+  const WidgetHome({super.key});
 
   @override
-  State<PaymentScreen> createState() => _PaymentScreenState();
+  WidgetHomeState createState() => WidgetHomeState();
 }
 
-class _PaymentScreenState extends State<PaymentScreen> {
+/// [WidgetHomeState]는 [WidgetHome] 위젯의 상태를 관리하는 클래스입니다.
+class WidgetHomeState extends State<WidgetHome> {
   final _form = GlobalKey<FormState>();
   late String orderId; // 주문번호
   late String orderName; // 주문명
 
+  /// 이 메소드는 [WidgetHome] 위젯을 빌드합니다.
+  ///
+  /// 사용자에게 결제 관련 정보를 입력받아 저장하며,
+  /// '결제하기' 버튼을 누르면 [Payment] 위젯을 통해 결제를 시작합니다.
   @override
   Widget build(BuildContext context) {
     return Scaffold(
