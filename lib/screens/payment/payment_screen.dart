@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -9,12 +8,6 @@ import 'package:get/get.dart';
 import 'package:tosspayments_widget_sdk_flutter/model/payment_info.dart';
 import 'package:tosspayments_widget_sdk_flutter/model/payment_widget_options.dart';
 
-=======
-import 'package:flutter/material.dart';
-import 'package:freeorder_flutter/provider/user_provider.dart';
-import 'package:provider/provider.dart';
-
->>>>>>> main
 class PaymentScreen extends StatefulWidget {
   const PaymentScreen({super.key});
 
@@ -23,7 +16,6 @@ class PaymentScreen extends StatefulWidget {
 }
 
 class _PaymentScreenState extends State<PaymentScreen> {
-<<<<<<< HEAD
   final _form = GlobalKey<FormState>();
   late String orderId; // 주문번호
   late String orderName; // 주문명
@@ -218,17 +210,4 @@ class UIState {
       this.variantKeyMethod,
       this.variantKeyAgreement,
       this.redirectUrl});
-=======
-  @override
-  void initState() {
-    super.initState();
-    final userProvider = Provider.of<UserProvider>(context, listen: false);
-    String orderType = userProvider.getType; // ✅ 주문 방식 가져오기
-    debugPrint("주문 방식 : $orderType");
-  }
-  @override
-  Widget build(BuildContext context) {
-    return const Placeholder();
-  }
->>>>>>> main
 }
