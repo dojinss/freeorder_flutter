@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:freeorder_flutter/screens/payment/payment.dart';
+import 'package:freeorder_flutter/widgets/toss_payment.dart';
 import 'package:freeorder_flutter/screens/payment/payment_widget_example_page.dart';
 import 'package:freeorder_flutter/utils/config.dart';
 import 'package:flutter/material.dart';

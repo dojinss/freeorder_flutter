@@ -34,49 +34,77 @@ class ResultPage extends StatelessWidget {
         builder: (context) {
           // Success 타입인 경우
           if (result is Success) {
-            return Column(
-              children: <Widget>[
-                makeRow('paymentKey', result.paymentKey),
-                const SizedBox(height: 20),
-                makeRow('orderId', result.orderId),
-                const SizedBox(height: 20),
-                makeRow('amount', result.amount.toString()),
-                const SizedBox(height: 20),
-                ...?result.additionalParams?.entries.map<Widget>((e) => Column(
-                      children: [
-                        makeRow(e.key, e.value),
-                        const SizedBox(height: 10),
-                      ],
-                    )),
-                ElevatedButton(
-                  onPressed: () {
-                    // copyToClipboard 함수 구현 필요
-                    // copyToClipboard(result.toString());
-                  },
-                  child: const Center(
-                    child: Text(
-                      '복사하기',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.white,
-                      ),
-                    ),
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image(image: AssetImage("images/payComplete.png"), width: 300),
+                  SizedBox(height: 50),
+                  Text(
+                    "결제 완료!",
+                    style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
                   ),
-                ),
-              ],
+                  SizedBox(height: 100),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.canPop(context);
+                      Navigator.pushReplacementNamed(context, "/menu/list");
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color.fromARGB(255, 255, 100, 50),
+                      minimumSize: const Size(double.infinity, 60),
+                    ),
+                    child: const Text("상품목록", style: TextStyle(fontSize: 20, color: Colors.white)),
+                  ),
+                  SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.canPop(context);
+                      Navigator.pushReplacementNamed(context, "/menu/list");
+                      Navigator.pushNamed(context, "/order/list");
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color.fromARGB(255, 255, 100, 50),
+                      minimumSize: const Size(double.infinity, 60),
+                    ),
+                    child: const Text("주문내역", style: TextStyle(fontSize: 20, color: Colors.white)),
+                  ),
+                ],
+              ),
             );
           }
 
           // Fail 타입인 경우
           if (result is Fail) {
-            return Column(
-              children: <Widget>[
-                makeRow('errorCode', result.errorCode),
-                const SizedBox(height: 20),
-                makeRow('errorMessage', result.errorMessage),
-                const SizedBox(height: 20),
-                makeRow('orderId', result.orderId),
-              ],
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image(image: AssetImage("images/payFail.png"), width: 100),
+                  SizedBox(height: 20),
+                  Text(
+                    "결제에 실패하였습니다.",
+                    style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    " 잠시후 다시 시도해주세요.",
+                    style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 100),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.canPop(context);
+                      Navigator.pushReplacementNamed(context, "/menu/list");
+                      Navigator.pushReplacementNamed(context, "/cart/list");
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color.fromARGB(255, 255, 100, 50),
+                      minimumSize: const Size(double.infinity, 60),
+                    ),
+                    child: const Text("장바구니", style: TextStyle(fontSize: 20, color: Colors.white)),
+                  ),
+                ],
+              ),
             );
           }
 
@@ -99,52 +127,28 @@ class ResultPage extends StatelessWidget {
 
     if (result is Success) {
       message = '인증 성공! 결제승인API를 호출해 결제를 완료하세요!';
-    } else if(result is Fail) {
+    } else if (result is Fail) {
       message = '결제에 실패하였습니다';
-    }
-    else {
+    } else {
       message = "결과값이 없습니다.";
     }
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('결제 결과'),
-          centerTitle: true,
-          automaticallyImplyLeading: false,
-        ),
-        body: SafeArea(
-          child: Container(
-            padding: const EdgeInsets.fromLTRB(30, 30, 30, 50),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  message,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
-                  ),
-                ),
-                const SizedBox(height: 50),
-                getContainer(result),
-                const SizedBox(height: 40),
-                ElevatedButton.icon(
-                  icon: const Icon(Icons.home),
-                  onPressed: () {
-                    Get.back();
-                  },
-                  label: const Text(
-                    '홈으로',
-                    style: TextStyle(fontSize: 16, color: Colors.white),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    elevation: 0,
-                    shadowColor: Colors.transparent,
-                    
-                  ),
-                ),
-              ],
-            ),
+      appBar: AppBar(
+        title: const Text('결제 결과'),
+        centerTitle: true,
+        automaticallyImplyLeading: false,
+      ),
+      body: SafeArea(
+        child: Container(
+          padding: const EdgeInsets.fromLTRB(30, 30, 30, 50),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              getContainer(result),
+            ],
           ),
-        ));
+        ),
+      ),
+    );
   }
 }

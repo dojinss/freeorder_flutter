@@ -1,5 +1,5 @@
 import 'package:freeorder_flutter/models/order.dart';
-import 'package:freeorder_flutter/screens/payment/payment.dart';
+import 'package:freeorder_flutter/widgets/toss_payment.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:freeorder_flutter/services/order_service.dart';
@@ -23,7 +23,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
   dynamic _loadData() async {
     OrderService orderService = OrderService();
     var orderData = await orderService.select(widget.ordersId);
-    var result;
+    dynamic result;
     if (orderData != null) {
       Order order = Order.fromMap(orderData);
       debugPrint("상품정보 : $order");
@@ -37,7 +37,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
           successUrl: "/success",
           failUrl: "/fail");
       result = await Get.to(
-        () => const Payment(),
+        () => const ToassPayment(),
         fullscreenDialog: true,
         arguments: data,
       );
@@ -82,12 +82,14 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 onChanged: (String? newValue) {
                   payMethod = newValue ?? '카드';
                 },
-                items: ['카드', '가상계좌', '계좌이체', '휴대폰', '상품권'].map<DropdownMenuItem<String>>((String i) {
-                  return DropdownMenuItem<String>(
-                    value: i,
-                    child: Text({'카드': '카드', '가상계좌': '가상계좌', '계좌이체': '계좌이체', '휴대폰': '휴대폰', '상품권': '상품권'}[i] ?? '카드'),
-                  );
-                }).toList(),
+                items: ['카드', '가상계좌', '계좌이체', '휴대폰', '상품권'].map<DropdownMenuItem<String>>(
+                  (String i) {
+                    return DropdownMenuItem<String>(
+                      value: i,
+                      child: Text({'카드': '카드', '가상계좌': '가상계좌', '계좌이체': '계좌이체', '휴대폰': '휴대폰', '상품권': '상품권'}[i] ?? '카드'),
+                    );
+                  },
+                ).toList(),
               ),
               TextFormField(
                 decoration: const InputDecoration(
@@ -137,22 +139,23 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 },
               ),
               Container(
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      _form.currentState!.save();
-                      var result = await _loadData();
-                      Get.toNamed("/result", arguments: result);
-                    },
-                    child: const Text(
-                      '결제하기',
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: ElevatedButton(
+                  onPressed: () async {
+                    _form.currentState!.save();
+                    var result = await _loadData();
+                    Get.toNamed("/result", arguments: result);
+                  },
+                  child: const Text(
+                    '결제하기',
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
                     ),
-                  ))
+                  ),
+                ),
+              )
             ],
           ),
         ),
