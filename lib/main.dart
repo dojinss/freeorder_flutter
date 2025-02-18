@@ -45,69 +45,33 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'freeorder',
       theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          scaffoldBackgroundColor: Colors.white,
-          useMaterial3: true,
-          primaryColor: Color.fromRGBO(255, 102, 0, 1)),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        scaffoldBackgroundColor: Colors.white,
+        useMaterial3: true,
+        primaryColor: const Color.fromRGBO(255, 102, 0, 1),
+      ),
       initialRoute: '/',
-      onGenerateRoute: (settings) {
-        // settings.name : 라우팅 경로
-        switch (settings.name) {
-          case "/":
-            return PageRouteBuilder(
-              pageBuilder: (context, animation, secondaryAnimation) => MainScreen(),
-              transitionDuration: Duration(seconds: 0),
-            );
-          case "/menu/list":
-            return PageRouteBuilder(
-              pageBuilder: (context, animation, secondaryAnimation) => MenuScreen(),
-              transitionDuration: Duration(seconds: 0),
-            );
-          case "/menu/detail/{id}":
-            return PageRouteBuilder(
-              pageBuilder: (context, animation, secondaryAnimation) => MenuDetailScreen(productId: ''),
-              transitionDuration: Duration(seconds: 0),
-            );
-          case "/cart/list":
-            return PageRouteBuilder(
-              pageBuilder: (context, animation, secondaryAnimation) => CartScreen(),
-              transitionDuration: Duration(seconds: 0),
-            );
-          case "/order/list":
-            return PageRouteBuilder(
-              pageBuilder: (context, animation, secondaryAnimation) => OrderScreen(),
-              transitionDuration: Duration(seconds: 0),
-            );
-          case "/order/detail":
-            return PageRouteBuilder(
-              pageBuilder: (context, animation, secondaryAnimation) => OrderDetailScreen(
-                order: settings.arguments as Order,
-              ),
-              transitionDuration: Duration(seconds: 0),
-            );
-          case "/payment":
-            return PageRouteBuilder(
-              pageBuilder: (context, animation, secondaryAnimation) => PaymentScreen(ordersId: settings.arguments.toString(),),
-              transitionDuration: Duration(seconds: 0),
-            );
-          case "/result":
-            return PageRouteBuilder(
-              pageBuilder: (context, animation, secondaryAnimation) => ResultPage(),
-              transitionDuration: Duration(seconds: 0),
-            );
-          case "/success":
-            return PageRouteBuilder(
-              pageBuilder: (context, animation, secondaryAnimation) => PaymentSuccessScreen(),
-              transitionDuration: Duration(seconds: 0),
-            );
-          case "/fail":
-            return PageRouteBuilder(
-              pageBuilder: (context, animation, secondaryAnimation) => PaymentFailScreen(),
-              transitionDuration: Duration(seconds: 0),
-            );
-        }
-        return null;
-      },
+      getPages: [
+        GetPage(name: '/', page: () => MainScreen()),
+        GetPage(name: '/menu/list', page: () => MenuScreen()),
+        GetPage(name: '/menu/detail/:id', page: () => MenuDetailScreen(productId: '')),
+        GetPage(name: '/cart/list', page: () => CartScreen()),
+        GetPage(name: '/order/list', page: () => OrderScreen()),
+        GetPage(
+          name: '/order/detail',
+          page: () => OrderDetailScreen(order: Get.arguments as Order),
+        ),
+        GetPage(
+          name: '/payment',
+          page: () => PaymentScreen(ordersId: Get.arguments.toString()),
+        ),
+        GetPage(
+          name: '/result',
+          page: () => ResultPage(),
+        ),
+        GetPage(name: '/success', page: () => PaymentSuccessScreen()),
+        GetPage(name: '/fail', page: () => PaymentFailScreen()),
+      ],
     );
   }
 }

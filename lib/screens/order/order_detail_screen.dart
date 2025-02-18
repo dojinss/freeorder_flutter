@@ -69,40 +69,52 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                 width: double.infinity,
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "메뉴 이름: ${_order.title}",
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(height: 8),
-                      Text(
-                        "수량: ${_order.totalQuantity}",
-                        style: TextStyle(fontSize: 18),
-                      ),
-                      SizedBox(height: 8),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "옵션:",
-                            style: TextStyle(fontSize: 18),
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: _order.itemList.map((item) {
-                              return Text('${item.name} + ${_format.formatNumber(item.price)}원');
-                            }).toList(),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: _order.itemList
+                          .map(
+                            (order) => Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "메뉴 이름: ${order.name}",
+                                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                                ),
+                                SizedBox(height: 8),
+                                Text(
+                                  "수량: ${order.quantity}",
+                                  style: TextStyle(fontSize: 18),
+                                ),
+                                SizedBox(height: 8),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      "옵션:",
+                                      style: TextStyle(fontSize: 18),
+                                    ),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.end,
+                                      children: order.optionList.map((option) {
+                                        return Text('${option.name} + ${_format.formatNumber(option.price)}원');
+                                      }).toList(),
+                                    )
+                                  ],
+                                ),
+                                SizedBox(height: 8),
+                                Text(
+                                  "가격: ${_format.formatNumber(order.price)} 원",
+                                  style: TextStyle(fontSize: 18),
+                                ),
+                                SizedBox(
+                                  height: 25,
+                                )
+                              ],
+                            ),
                           )
-                        ],
-                      ),
-                      SizedBox(height: 8),
-                      Text(
-                        "가격: ${_format.formatNumber(_order.totalPrice)} 원",
-                        style: TextStyle(fontSize: 18),
-                      ),
-                    ],
+                          .toList(),
+                    ),
                   ),
                 ),
               ),

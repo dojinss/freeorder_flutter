@@ -3,15 +3,20 @@ import 'package:freeorder_flutter/global_config.dart';
 import 'package:freeorder_flutter/models/cart.dart';
 import 'package:freeorder_flutter/models/cart_option.dart';
 import 'package:freeorder_flutter/models/option_item.dart';
+import 'package:freeorder_flutter/models/order.dart';
 import 'package:freeorder_flutter/models/product.dart';
 import 'package:freeorder_flutter/provider/user_provider.dart';
 import 'package:freeorder_flutter/services/cart_service.dart';
+import 'package:freeorder_flutter/services/order_service.dart';
 import 'package:freeorder_flutter/services/payment_service.dart';
 import 'package:freeorder_flutter/services/product_service.dart';
 import 'package:freeorder_flutter/utils/format.dart';
 import 'package:freeorder_flutter/widgets/custom_snackbar.dart';
 import 'package:freeorder_flutter/widgets/image_widget.dart';
+import 'package:freeorder_flutter/widgets/toss_payment.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
+import 'package:tosspayments_widget_sdk_flutter/model/paymentData.dart';
 import 'package:uuid/uuid.dart';
 
 class CartScreen extends StatefulWidget {
@@ -39,6 +44,32 @@ class _CartScreenState extends State<CartScreen> {
       userProvider.checkId(); // 필요하면 호출
       debugPrint("접속한 유저 아이디 : ${userProvider.getUsersId}");
     });
+  }
+
+  dynamic _loadData(String ordersId) async {
+    OrderService orderService = OrderService();
+    var orderData = await orderService.select(ordersId);
+    dynamic result;
+    if (orderData != null) {
+      Order order = Order.fromMap(orderData);
+      debugPrint("상품정보 : $order");
+      PaymentData data = PaymentData(
+          paymentMethod: "카드",
+          orderId: ordersId,
+          orderName: order.title,
+          amount: order.totalPrice,
+          customerName: "김프리",
+          customerEmail: "example@test.com",
+          successUrl: "/success",
+          failUrl: "/fail");
+      result = await Get.to(
+        () => const ToassPayment(),
+        fullscreenDialog: true,
+        arguments: data,
+      );
+    }
+    debugPrint("결제 페이지 세팅 값 : $result");
+    return result;
   }
 
   void _showMenu(Cart cart) async {
@@ -319,7 +350,8 @@ class _CartScreenState extends State<CartScreen> {
                     UserProvider userProvider = Provider.of<UserProvider>(context, listen: false);
                     var data = await paymentService.select(userProvider.getType);
                     if (data != null) {
-                      Navigator.pushNamed(context, "/payment", arguments: data['ordersId']);
+                      var result = await _loadData(data['ordersId']);
+                      Get.toNamed("/result", arguments: result);
                     }
                   },
                   child: const Text(

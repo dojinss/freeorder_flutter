@@ -2,7 +2,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:freeorder_flutter/models/payment.dart';
-import 'package:freeorder_flutter/provider/user_provider.dart';
 
 class PaymentService {
   // 테이블 이름
@@ -51,7 +50,7 @@ class PaymentService {
   Future<int> insert(Payment payment) async {
     int result = 0;
     try {
-      var response = await dio.post(url, data: payment.toMap());
+      var response = await dio.post("http://10.0.2.2:8080/qr/payments", data: payment.toMap());
 
       debugPrint(":::::reponse - body ::::::");
       debugPrint("${response.data}");
