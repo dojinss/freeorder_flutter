@@ -1,11 +1,4 @@
-
-
-
 import 'package:flutter/material.dart';
-import 'package:freeorder_flutter/screens/payment/components.dart';
-import 'package:freeorder_flutter/screens/payment/result.dart';
-import 'package:freeorder_flutter/screens/payment/widget_home.dart';
-import 'package:freeorder_flutter/utils/toast.dart';
 import 'package:get/get.dart';
 import 'package:tosspayments_widget_sdk_flutter/model/agreement_status.dart';
 import 'package:tosspayments_widget_sdk_flutter/model/payment_info.dart';
@@ -15,6 +8,11 @@ import 'package:tosspayments_widget_sdk_flutter/model/tosspayments_result.dart';
 import 'package:tosspayments_widget_sdk_flutter/payment_widget.dart';
 import 'package:tosspayments_widget_sdk_flutter/widgets/agreement.dart';
 import 'package:tosspayments_widget_sdk_flutter/widgets/payment_method.dart';
+
+import 'components.dart';
+import '../../utils/toast.dart';
+import 'result.dart';
+import 'widget_home.dart';
 
 class PaymentWidgetExamplePage extends StatefulWidget {
   final UIState info;

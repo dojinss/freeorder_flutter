@@ -14,9 +14,7 @@ class ResultPage extends StatelessWidget {
   /// [title]는 회색 텍스트 스타일로, [message]는 기본 텍스트 스타일로 표시됩니다.
   Row makeRow(String title, String message) {
     return Row(children: [
-      Expanded(
-          flex: 3,
-          child: Text(title, style: const TextStyle(color: Colors.grey))),
+      Expanded(flex: 3, child: Text(title, style: const TextStyle(color: Colors.grey))),
       Expanded(
         flex: 8,
         child: Text(message),
@@ -30,7 +28,6 @@ class ResultPage extends StatelessWidget {
   /// [result]이 [Fail] 타입이면 오류 메시지와 함께 세부 정보를 표시합니다.
   /// 그 외의 경우, 비어있는 [Container]를 반환합니다.
   Container getContainer(dynamic result) {
-    debugPrint("결제창");
     return Container(
       color: Colors.transparent,
       child: Builder(
@@ -97,12 +94,16 @@ class ResultPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     dynamic result = Get.arguments;
+    debugPrint("결과값 : $result");
     String message;
 
     if (result is Success) {
       message = '인증 성공! 결제승인API를 호출해 결제를 완료하세요!';
-    } else {
+    } else if(result is Fail) {
       message = '결제에 실패하였습니다';
+    }
+    else {
+      message = "결과값이 없습니다.";
     }
     return Scaffold(
         appBar: AppBar(
@@ -138,6 +139,7 @@ class ResultPage extends StatelessWidget {
                   style: ElevatedButton.styleFrom(
                     elevation: 0,
                     shadowColor: Colors.transparent,
+                    
                   ),
                 ),
               ],

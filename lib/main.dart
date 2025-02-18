@@ -7,19 +7,12 @@ import 'package:freeorder_flutter/screens/menu/menu_detail_screen.dart';
 import 'package:freeorder_flutter/screens/menu/menu_screen.dart';
 import 'package:freeorder_flutter/screens/order/order_detail_screen.dart';
 import 'package:freeorder_flutter/screens/order/order_screen.dart';
-<<<<<<< HEAD
-import 'package:freeorder_flutter/screens/payment/home.dart';
-import 'package:freeorder_flutter/screens/payment/payment.dart';
 import 'package:freeorder_flutter/screens/payment/payment_fail_screen.dart';
 import 'package:freeorder_flutter/screens/payment/payment_screen.dart';
 import 'package:freeorder_flutter/screens/payment/payment_success_screen.dart';
 import 'package:freeorder_flutter/screens/payment/result.dart';
 import 'package:get/get.dart';
-import 'package:tosspayments_widget_sdk_flutter/model/tosspayments_result.dart';
-=======
-import 'package:freeorder_flutter/screens/payment/payment_screen.dart';
 import 'package:provider/provider.dart';
->>>>>>> main
 
 // 전역 설정 클래스...
 class GlobalConfig extends ChangeNotifier {
@@ -56,22 +49,6 @@ class MyApp extends StatelessWidget {
           scaffoldBackgroundColor: Colors.white,
           useMaterial3: true,
           primaryColor: Color.fromRGBO(255, 102, 0, 1)),
-<<<<<<< HEAD
-      initialRoute: '/payment',
-      routes: {
-        '/main': (context) => const MainScreen(),
-        '/menu/list': (context) => const MenuScreen(),
-        '/menu/detail': (context) => const MenuDetailScreen(
-              productId: '',
-            ),
-        '/cart/list': (context) => const CartScreen(),
-        '/order/list': (context) => const OrderScreen(),
-        '/order/detail': (context) => const OrderDetailScreen(),
-        '/payment':(context) => const Home(),
-        // '/payment/pay/success': (context) => const PaymentSuccessScreen(),
-        // '/payment/pay/fail': (context) => const PaymentFailScreen(),
-        '/result':(context) => const ResultPage()
-=======
       initialRoute: '/',
       onGenerateRoute: (settings) {
         // settings.name : 라우팅 경로
@@ -110,12 +87,26 @@ class MyApp extends StatelessWidget {
             );
           case "/payment":
             return PageRouteBuilder(
-              pageBuilder: (context, animation, secondaryAnimation) => PaymentScreen(),
+              pageBuilder: (context, animation, secondaryAnimation) => PaymentScreen(ordersId: settings.arguments.toString(),),
+              transitionDuration: Duration(seconds: 0),
+            );
+          case "/result":
+            return PageRouteBuilder(
+              pageBuilder: (context, animation, secondaryAnimation) => ResultPage(),
+              transitionDuration: Duration(seconds: 0),
+            );
+          case "/success":
+            return PageRouteBuilder(
+              pageBuilder: (context, animation, secondaryAnimation) => PaymentSuccessScreen(),
+              transitionDuration: Duration(seconds: 0),
+            );
+          case "/fail":
+            return PageRouteBuilder(
+              pageBuilder: (context, animation, secondaryAnimation) => PaymentFailScreen(),
               transitionDuration: Duration(seconds: 0),
             );
         }
         return null;
->>>>>>> main
       },
     );
   }
