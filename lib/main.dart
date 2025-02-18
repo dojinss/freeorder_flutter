@@ -7,7 +7,10 @@ import 'package:freeorder_flutter/screens/menu/menu_detail_screen.dart';
 import 'package:freeorder_flutter/screens/menu/menu_screen.dart';
 import 'package:freeorder_flutter/screens/order/order_detail_screen.dart';
 import 'package:freeorder_flutter/screens/order/order_screen.dart';
+import 'package:freeorder_flutter/screens/payment/payment_fail_screen.dart';
 import 'package:freeorder_flutter/screens/payment/payment_screen.dart';
+import 'package:freeorder_flutter/screens/payment/payment_success_screen.dart';
+import 'package:freeorder_flutter/screens/payment/result.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
@@ -84,7 +87,22 @@ class MyApp extends StatelessWidget {
             );
           case "/payment":
             return PageRouteBuilder(
-              pageBuilder: (context, animation, secondaryAnimation) => PaymentScreen(),
+              pageBuilder: (context, animation, secondaryAnimation) => PaymentScreen(ordersId: settings.arguments.toString(),),
+              transitionDuration: Duration(seconds: 0),
+            );
+          case "/result":
+            return PageRouteBuilder(
+              pageBuilder: (context, animation, secondaryAnimation) => ResultPage(),
+              transitionDuration: Duration(seconds: 0),
+            );
+          case "/success":
+            return PageRouteBuilder(
+              pageBuilder: (context, animation, secondaryAnimation) => PaymentSuccessScreen(),
+              transitionDuration: Duration(seconds: 0),
+            );
+          case "/fail":
+            return PageRouteBuilder(
+              pageBuilder: (context, animation, secondaryAnimation) => PaymentFailScreen(),
               transitionDuration: Duration(seconds: 0),
             );
         }

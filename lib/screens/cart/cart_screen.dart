@@ -6,6 +6,7 @@ import 'package:freeorder_flutter/models/option_item.dart';
 import 'package:freeorder_flutter/models/product.dart';
 import 'package:freeorder_flutter/provider/user_provider.dart';
 import 'package:freeorder_flutter/services/cart_service.dart';
+import 'package:freeorder_flutter/services/payment_service.dart';
 import 'package:freeorder_flutter/services/product_service.dart';
 import 'package:freeorder_flutter/utils/format.dart';
 import 'package:freeorder_flutter/widgets/custom_snackbar.dart';
@@ -26,6 +27,7 @@ class _CartScreenState extends State<CartScreen> {
   Map<String, bool> selectedOptionItems = {}; // 옵션 선택 상태 저장
   late Product _productInfo;
   final CartService cartService = CartService();
+  final PaymentService paymentService = PaymentService();
   late Future<List<Map<String, dynamic>>> _cartItems;
 
   @override
@@ -33,8 +35,7 @@ class _CartScreenState extends State<CartScreen> {
     super.initState();
     _loadCartItems();
     Future.microtask(() {
-      UserProvider userProvider =
-          Provider.of<UserProvider>(context, listen: false);
+      UserProvider userProvider = Provider.of<UserProvider>(context, listen: false);
       userProvider.checkId(); // 필요하면 호출
       debugPrint("접속한 유저 아이디 : ${userProvider.getUsersId}");
     });
@@ -101,17 +102,13 @@ class _CartScreenState extends State<CartScreen> {
                     ),
                     child: SingleChildScrollView(
                       child: Column(
-                        children:
-                            _productInfo.option.itemList.map((optionItem) {
+                        children: _productInfo.option.itemList.map((optionItem) {
                           return CheckboxListTile(
-                            title: Text(
-                                "${optionItem.name} (+${optionItem.price}원)"),
+                            title: Text("${optionItem.name} (+${optionItem.price}원)"),
                             value: selectedOptionItems[optionItem.id] ?? false,
                             onChanged: (bool? value) {
                               setModalState(() {
-                                selectedOptionItems =
-                                    Map.from(selectedOptionItems)
-                                      ..[optionItem.id] = value ?? false;
+                                selectedOptionItems = Map.from(selectedOptionItems)..[optionItem.id] = value ?? false;
                               });
                             },
                           );
@@ -136,8 +133,7 @@ class _CartScreenState extends State<CartScreen> {
                           .where((entry) => entry.value) // 체크된 옵션만 필터링
                           .map((entry) {
                         // OptionItem 목록에서 해당 ID를 가진 객체 찾기
-                        OptionItem? selectedOption =
-                            _productInfo.option.itemList.firstWhere(
+                        OptionItem? selectedOption = _productInfo.option.itemList.firstWhere(
                           (item) => item.id == entry.key,
                           orElse: () => OptionItem(
                             id: entry.key,
@@ -168,8 +164,7 @@ class _CartScreenState extends State<CartScreen> {
                         debugPrint("장바구니 옵션 변경 완료!");
                         Navigator.pop(context, selectedOptionItems);
                         _loadCartItems();
-                        CustomSnackbar(text: "상품의 옵션이 변경 되었습니다.")
-                            .showSnackBar(context);
+                        CustomSnackbar(text: "상품의 옵션이 변경 되었습니다.").showSnackBar(context);
                       }
                     },
                     child: const Text(
@@ -210,8 +205,7 @@ class _CartScreenState extends State<CartScreen> {
 
   // 장바구니 목록 전체 삭제
   void _removeAllItems() async {
-    UserProvider userProvider =
-        Provider.of<UserProvider>(context, listen: false);
+    UserProvider userProvider = Provider.of<UserProvider>(context, listen: false);
     int result = await cartService.deleteAll(userProvider.getUsersId);
     if (result == 1) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -234,8 +228,7 @@ class _CartScreenState extends State<CartScreen> {
           },
         ),
         centerTitle: false,
-        title:
-            const Text("장바구니", style: TextStyle(fontWeight: FontWeight.bold)),
+        title: const Text("장바구니", style: TextStyle(fontWeight: FontWeight.bold)),
       ),
       body: Container(
         padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
@@ -253,8 +246,7 @@ class _CartScreenState extends State<CartScreen> {
                     ),
                   ),
                   onPressed: () {
-                    Provider.of<UserProvider>(context, listen: false)
-                        .clearCart(); // ✅ 개수 초기화
+                    Provider.of<UserProvider>(context, listen: false).clearCart(); // ✅ 개수 초기화
                     _removeAllItems();
                   },
                   child: Text("전체 삭제"),
@@ -321,11 +313,14 @@ class _CartScreenState extends State<CartScreen> {
                       borderRadius: BorderRadius.zero,
                     ),
                     backgroundColor: GlobalConfig().primaryColor,
-                    minimumSize:
-                        Size(double.infinity, 70), // ✅ 최소 높이 설정 (불필요할 수도 있음)
+                    minimumSize: Size(double.infinity, 70), // ✅ 최소 높이 설정 (불필요할 수도 있음)
                   ),
-                  onPressed: () {
-                    Navigator.pushNamed(context, "/payment");
+                  onPressed: () async {
+                    UserProvider userProvider = Provider.of<UserProvider>(context, listen: false);
+                    var data = await paymentService.select(userProvider.getType);
+                    if (data != null) {
+                      Navigator.pushNamed(context, "/payment", arguments: data['ordersId']);
+                    }
                   },
                   child: const Text(
                     "결제하기",
@@ -358,9 +353,7 @@ class _CartScreenState extends State<CartScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // 상품 이미지
-            ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: ImageWidget(id: cart.productsId, width: 80, height: 80)),
+            ClipRRect(borderRadius: BorderRadius.circular(8), child: ImageWidget(id: cart.productsId, width: 80, height: 80)),
             const SizedBox(width: 10),
             // 상품 정보
             Expanded(
@@ -392,8 +385,7 @@ class _CartScreenState extends State<CartScreen> {
                       IconButton(
                         icon: const Icon(Icons.delete, color: Colors.red),
                         onPressed: () {
-                          Provider.of<UserProvider>(context, listen: false)
-                              .decrementCartItem(); // ✅ 개수 감소
+                          Provider.of<UserProvider>(context, listen: false).decrementCartItem(); // ✅ 개수 감소
                           _removeItem(cart.id);
                         },
                       ),
@@ -433,8 +425,7 @@ class _CartScreenState extends State<CartScreen> {
                       children: [
                         Text(
                           "옵션: ",
-                          style:
-                              TextStyle(color: Colors.grey[600], fontSize: 13),
+                          style: TextStyle(color: Colors.grey[600], fontSize: 13),
                           overflow: TextOverflow.ellipsis,
                         ),
                         Flexible(
@@ -442,8 +433,7 @@ class _CartScreenState extends State<CartScreen> {
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: cart.optionList
                                 .map(
-                                  (e) => Text(
-                                      "${e.name} +${CustomFormat().formatNumber(e.price)}원"),
+                                  (e) => Text("${e.name} +${CustomFormat().formatNumber(e.price)}원"),
                                 )
                                 .toList(),
                           ),

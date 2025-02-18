@@ -15,7 +15,7 @@ class LocalConfig {
   }
 
   static final UIState _live = UIState(
-    clientKey: 'test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm',
+    clientKey: 'test_ck_D5GePWvyJnrK0W0k6q8gLzN97Eoq',
     customerKey: 'aaaa',
     currency: Currency.KRW,
     country: "KR",
@@ -24,7 +24,7 @@ class LocalConfig {
   );
 
   static final UIState _staging = UIState(
-    clientKey: 'test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm',
+    clientKey: 'live_ck_JQbgMGZzorzj0ZnKbOjrl5E1em4d',
     customerKey: 'a1b2c3',
     currency: Currency.KRW,
     country: "KR",

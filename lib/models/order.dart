@@ -84,23 +84,27 @@ class Order {
 
   factory Order.fromMap(Map<String, dynamic> map) {
     return Order(
-      id: map['id'] as String,
-      orderNumber: map['orderNumber'] as int,
-      type: map['type'] as String,
-      usersId: map['usersId'] as String,
-      title: map['title'] as String,
-      totalQuantity: map['totalQuantity'] as int,
-      totalCount: map['totalCount'] as int,
-      totalPrice: map['totalPrice'] as int,
-      status: map['status'] as String,
-      orderedAt: map['orderedAt'] is int ? DateTime.fromMillisecondsSinceEpoch(map['orderedAt']) : DateTime.parse(map['orderedAt']),
-      createdAt: map['createdAt'] is int ? DateTime.fromMillisecondsSinceEpoch(map['createdAt']) : DateTime.parse(map['createdAt']),
-      updatedAt: map['updatedAt'] is int ? DateTime.fromMillisecondsSinceEpoch(map['updatedAt']) : DateTime.parse(map['updatedAt']),
-      itemList: List<OrderItem>.from(
-        (map['itemList']).map<OrderItem>(
-          (x) => OrderItem.fromMap(x as Map<String, dynamic>),
-        ),
-      ),
+      id: (map['id'] as String?) ?? '',
+      orderNumber: (map['orderNumber'] as int?) ?? 0,
+      type: (map['type'] as String?) ?? '',
+      usersId: (map['usersId'] as String?) ?? '',
+      title: (map['title'] as String?) ?? '',
+      totalQuantity: (map['totalQuantity'] as int?) ?? 0,
+      totalCount: (map['totalCount'] as int?) ?? 0,
+      totalPrice: (map['totalPrice'] as int?) ?? 0,
+      status: (map['status'] as String?) ?? '',
+      orderedAt:
+          (map['orderedAt'] ?? DateTime.now()) is int ? DateTime.fromMillisecondsSinceEpoch(map['orderedAt'] ?? 0) : (map['orderedAt'] != null ? DateTime.parse(map['orderedAt']) : DateTime.now()),
+      createdAt:
+          (map['createdAt'] ?? DateTime.now()) is int ? DateTime.fromMillisecondsSinceEpoch(map['createdAt'] ?? 0) : (map['createdAt'] != null ? DateTime.parse(map['createdAt']) : DateTime.now()),
+      updatedAt: map['updatedAt'] is int ? DateTime.fromMillisecondsSinceEpoch(map['updatedAt'] ?? 0) : (map['updatedAt'] != null ? DateTime.parse(map['updatedAt']) : DateTime.now()),
+      itemList: map['itemList'] != null
+          ? List<OrderItem>.from(
+              (map['itemList']).map<OrderItem>(
+                (x) => OrderItem.fromMap(x as Map<String, dynamic>),
+              ),
+            )
+          : [],
     );
   }
 

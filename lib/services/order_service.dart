@@ -29,9 +29,7 @@ class OrderService {
       var response = await dio.get('$url/$id');
       debugPrint(":::::reponse - body ::::::");
       var data = response.data;
-      if (data.containsKey("order") && data["order"] is Map<String, dynamic>) {
-        order = data["order"] as Map<String, dynamic>;
-      }
+      order = data;
       debugPrint("$order");
     } catch (e) {
       debugPrint("$e");

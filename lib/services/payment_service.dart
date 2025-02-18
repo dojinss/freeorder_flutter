@@ -1,10 +1,12 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:freeorder_flutter/models/payment.dart';
+import 'package:freeorder_flutter/provider/user_provider.dart';
 
 class PaymentService {
   // 테이블 이름
-  final String url = 'http://10.0.2.2:8080/qr/payments';
+  final String url = 'http://10.0.2.2:8080/payments';
   final Dio dio = Dio();
 
   // 데이터 목록 조회
@@ -23,20 +25,26 @@ class PaymentService {
   }
 
   // 데이터 단일 조회
-  Future<Map<String, dynamic>?> select(String id) async {
-    var payment = Map<String, dynamic>.fromEntries(List.empty());
+  Future<Map<String, dynamic>?> select(String type) async {
+    var result = Map<String, dynamic>.fromEntries(List.empty());
+    final storage = const FlutterSecureStorage();
+    String? usersId = await storage.read(key: "usersId");
+    if (usersId == null) {
+      debugPrint("🚨 오류: 사용자 ID가 null 입니다.");
+      return result;
+    }
     try {
-      var response = await dio.get('$url/$id');
+      var response = await dio.get('$url/$usersId/$type');
       debugPrint(":::::reponse - body ::::::");
       var data = response.data;
-      if (data.containsKey("payment") && data["payment"] is Map<String, dynamic>) {
-        payment = data["payment"] as Map<String, dynamic>;
+      if (data != null) {
+        result = data;
       }
-      debugPrint("$payment");
+      debugPrint("$result");
     } catch (e) {
       debugPrint("$e");
     }
-    return payment;
+    return result;
   }
 
   // 데이터 등록

@@ -12,19 +12,23 @@ class Payment extends StatelessWidget {
   /// 위젯을 빌드합니다.
   ///
   /// 'test_ck_D5GePWvyJnrK0W0k6q8gLzN97Eoq' 클라이언트 키를 사용하여 [TossPayments]를 생성합니다.
+  /// test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm << 우리꺼
   ///
   /// 성공하면, [Get]을 이용해 결과를 반환하고 이전 화면으로 돌아갑니다.
   /// 실패하면, [Get]을 이용해 실패 정보를 반환하고 이전 화면으로 돌아갑니다.
   @override
   Widget build(BuildContext context) {
     PaymentData data = Get.arguments as PaymentData;
+    debugPrint("결제창 출력!!");
     return TossPayments(
         clientKey: 'test_ck_D5GePWvyJnrK0W0k6q8gLzN97Eoq',
         data: data,
         success: (Success success) {
+          debugPrint("결제 성공! $success");
           Get.back(result: success);
         },
         fail: (Fail fail) {
+          debugPrint("결제 실패! : $fail");
           Get.back(result: fail);
         });
   }

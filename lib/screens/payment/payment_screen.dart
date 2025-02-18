@@ -1,25 +1,63 @@
-import 'dart:io';
-
+import 'package:freeorder_flutter/models/order.dart';
+import 'package:freeorder_flutter/screens/payment/payment.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:freeorder_flutter/screens/payment/payment_widget_example_page.dart';
-import 'package:freeorder_flutter/utils/config.dart';
+import 'package:freeorder_flutter/services/order_service.dart';
 import 'package:get/get.dart';
-import 'package:tosspayments_widget_sdk_flutter/model/payment_info.dart';
-import 'package:tosspayments_widget_sdk_flutter/model/payment_widget_options.dart';
+import 'package:tosspayments_widget_sdk_flutter/model/paymentData.dart';
 
+/// [PaymentScreen] 위젯은 사용자에게 결제 수단 및 주문 관련 정보를 입력받아
+/// 결제를 시작하는 화면을 제공합니다.
 class PaymentScreen extends StatefulWidget {
-  const PaymentScreen({super.key});
+  final String ordersId;
+
+  /// 기본 생성자입니다.
+  const PaymentScreen({super.key, required this.ordersId});
 
   @override
   State<PaymentScreen> createState() => _PaymentScreenState();
 }
 
+/// [_PaymentScreenState]는 [PaymentScreen] 위젯의 상태를 관리하는 클래스입니다.
 class _PaymentScreenState extends State<PaymentScreen> {
+  dynamic _loadData() async {
+    OrderService orderService = OrderService();
+    var orderData = await orderService.select(widget.ordersId);
+    var result;
+    if (orderData != null) {
+      Order order = Order.fromMap(orderData);
+      debugPrint("상품정보 : $order");
+      PaymentData data = PaymentData(
+          paymentMethod: "카드",
+          orderId: widget.ordersId,
+          orderName: order.title,
+          amount: order.totalPrice,
+          customerName: customerName,
+          customerEmail: customerEmail,
+          successUrl: "/success",
+          failUrl: "/fail");
+      result = await Get.to(
+        () => const Payment(),
+        fullscreenDialog: true,
+        arguments: data,
+      );
+    }
+    debugPrint("결제 페이지 세팅 값 : $result");
+    return result;
+  }
+
   final _form = GlobalKey<FormState>();
+  late String payMethod = '카드'; // 결제수단
   late String orderId; // 주문번호
   late String orderName; // 주문명
+  late String amount; // 결제금액
+  late String customerName; // 주문자명
+  late String customerEmail; // 구매자 이메일
 
+  /// 이 메소드는 [PaymentScreen] 위젯을 빌드합니다.
+  ///
+  /// 사용자에게 결제 관련 정보를 입력받아 저장하며,
+  /// '결제하기' 버튼을 누르면 [Payment] 위젯을 통해 결제를 시작합니다.
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,23 +72,22 @@ class _PaymentScreenState extends State<PaymentScreen> {
           key: _form,
           child: ListView(
             children: [
-              TextFormField(
+              DropdownButtonFormField<String>(
+                value: '카드',
                 decoration: const InputDecoration(
-                  labelText: 'Client Key',
+                  labelText: '결제수단',
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
+                  labelStyle: TextStyle(fontSize: 15, color: Color(0xffcfcfcf)),
                 ),
-                initialValue: LocalConfig.uiState.clientKey,
-                onSaved: (String? value) {
-                  LocalConfig.uiState.clientKey = value!;
+                onChanged: (String? newValue) {
+                  payMethod = newValue ?? '카드';
                 },
-              ),
-              TextFormField(
-                decoration: const InputDecoration(
-                  labelText: 'Customer Key',
-                ),
-                initialValue: LocalConfig.uiState.customerKey,
-                onSaved: (String? value) {
-                  LocalConfig.uiState.customerKey = value!;
-                },
+                items: ['카드', '가상계좌', '계좌이체', '휴대폰', '상품권'].map<DropdownMenuItem<String>>((String i) {
+                  return DropdownMenuItem<String>(
+                    value: i,
+                    child: Text({'카드': '카드', '가상계좌': '가상계좌', '계좌이체': '계좌이체', '휴대폰': '휴대폰', '상품권': '상품권'}[i] ?? '카드'),
+                  );
+                }).toList(),
               ),
               TextFormField(
                 decoration: const InputDecoration(
@@ -77,79 +114,26 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 initialValue: '50000',
                 keyboardType: const TextInputType.numberWithOptions(decimal: true),
                 onSaved: (String? value) {
-                  LocalConfig.uiState.amount = int.parse(value!);
-                },
-              ),
-              DropdownButtonFormField<Currency>(
-                value: Currency.KRW,
-                decoration: const InputDecoration(
-                  labelText: '통화',
-                  floatingLabelBehavior: FloatingLabelBehavior.always,
-                  labelStyle: TextStyle(fontSize: 15, color: Color(0xffcfcfcf)),
-                ),
-                onChanged: (Currency? newValue) {
-                  LocalConfig.uiState.currency = newValue ?? Currency.KRW;
-                },
-                items: Currency.values.map<DropdownMenuItem<Currency>>((Currency c) {
-                  return DropdownMenuItem<Currency>(value: c, child: Text(c.name));
-                }).toList(),
-              ),
-              TextFormField(
-                decoration: const InputDecoration(
-                  labelText: '국가 코드',
-                ),
-                initialValue: LocalConfig.uiState.country,
-                keyboardType: TextInputType.text,
-                onSaved: (String? value) {
-                  LocalConfig.uiState.country = value!;
+                  amount = value!;
                 },
               ),
               TextFormField(
                 decoration: const InputDecoration(
-                  labelText: 'Variant Key (Method)',
+                  labelText: '구매자명(customerName)',
                 ),
-                initialValue: (() {
-                  try {
-                    return LocalConfig.uiState.variantKeyMethod;
-                  } catch (e) {
-                    return null;
-                  }
-                })(),
-                keyboardType: TextInputType.text,
+                initialValue: '김토스',
                 onSaved: (String? value) {
-                  LocalConfig.uiState.variantKeyMethod = value;
+                  customerName = value!;
                 },
               ),
               TextFormField(
                 decoration: const InputDecoration(
-                  labelText: 'Variant Key (Agreement)',
+                  labelText: '이메일(customerEmail)',
                 ),
-                initialValue: (() {
-                  try {
-                    return LocalConfig.uiState.variantKeyAgreement;
-                  } catch (e) {
-                    return null;
-                  }
-                })(),
-                keyboardType: TextInputType.text,
+                initialValue: 'email@tosspayments.com',
+                keyboardType: TextInputType.emailAddress,
                 onSaved: (String? value) {
-                  LocalConfig.uiState.variantKeyAgreement = value;
-                },
-              ),
-              TextFormField(
-                decoration: const InputDecoration(
-                  labelText: 'Redirect Url',
-                ),
-                initialValue: (() {
-                  try {
-                    return LocalConfig.uiState.redirectUrl;
-                  } catch (e) {
-                    return null;
-                  }
-                })(),
-                keyboardType: TextInputType.text,
-                onSaved: (String? value) {
-                  LocalConfig.uiState.redirectUrl = value;
+                  customerEmail = value!;
                 },
               ),
               Container(
@@ -157,22 +141,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   child: ElevatedButton(
                     onPressed: () async {
                       _form.currentState!.save();
-                      PaymentInfo data = PaymentInfo(
-                        orderId: orderId,
-                        orderName: orderName,
-                        appScheme: Platform.isIOS ? 'example://' : null,
-                      );
-                      var result = await Get.to(
-                        () => PaymentWidgetExamplePage(
-                          data: data,
-                          info: LocalConfig.uiState,
-                        ),
-                        popGesture: Platform.isIOS,
-                        fullscreenDialog: Platform.isAndroid,
-                      );
-                      if (result != null) {
-                        Get.toNamed("/result", arguments: result);
-                      }
+                      var result = await _loadData();
+                      Get.toNamed("/result", arguments: result);
                     },
                     child: const Text(
                       '결제하기',
@@ -189,25 +159,4 @@ class _PaymentScreenState extends State<PaymentScreen> {
       ),
     );
   }
-}
-
-class UIState {
-  String clientKey;
-  String customerKey;
-  Currency currency;
-  String country;
-  num amount;
-  String? variantKeyMethod;
-  String? variantKeyAgreement;
-  String? redirectUrl;
-
-  UIState(
-      {required this.clientKey,
-      required this.customerKey,
-      required this.currency,
-      required this.country,
-      required this.amount,
-      this.variantKeyMethod,
-      this.variantKeyAgreement,
-      this.redirectUrl});
 }
