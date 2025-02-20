@@ -43,9 +43,27 @@ class _OrderScreenState extends State<OrderScreen> {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
                 } else if (snapshot.hasError) {
-                  return const Center(child: Text("데이터 조회 중 오류 발생"));
+                  return Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Center(
+                          child: Text("데이터 조회 중 오류 발생"),
+                        ),
+                      ],
+                    ),
+                  );
                 } else if (snapshot.data == null || snapshot.data!.isEmpty) {
-                  return const Center(child: Text("주문내역이 없습니다."));
+                  return Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Center(
+                          child: Text("주문내역이 없습니다."),
+                        ),
+                      ],
+                    ),
+                  );
                 } else {
                   List<Map<String, dynamic>> orderData = snapshot.data!;
                   return _loadOrders(orderData);

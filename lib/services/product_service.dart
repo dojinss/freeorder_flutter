@@ -1,14 +1,17 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:freeorder_flutter/main.dart';
 import 'package:freeorder_flutter/models/product.dart';
 
 class ProductService {
   // 테이블 이름
-  final String url = 'http://10.0.2.2:8080/qr/products';
+  // final String url = 'http://10.0.2.2:8080/qr/products';
   final Dio dio = Dio();
+  final GlobalConfig _config = GlobalConfig();
 
   // 데이터 목록 조회
   Future<List<Map<String, dynamic>>> list() async {
+    final String url = "${_config.backendUrl}/qr/products";
     var list = List<Map<String, dynamic>>.empty();
     try {
       Response response = await dio.get(url);
@@ -24,6 +27,7 @@ class ProductService {
 
   // 데이터 목록 카테고리별 조회
   Future<List<Map<String, dynamic>>> listByCate(String id) async {
+    final String url = "${_config.backendUrl}/qr/products";
     var list = List<Map<String, dynamic>>.empty();
     try {
       Response response = await dio.get("$url?cate=$id");
@@ -39,6 +43,7 @@ class ProductService {
 
   // 데이터 단일 조회
   Future<Map<String, dynamic>?> select(String id) async {
+    final String url = "${_config.backendUrl}/qr/products";
     try {
       var response = await dio.get('$url/$id');
       var data = response.data;
@@ -61,6 +66,7 @@ class ProductService {
 
   // 데이터 등록
   Future<int> insert(Product product) async {
+    final String url = "${_config.backendUrl}/qr/products";
     int result = 0;
     try {
       var response = await dio.post(url, data: product.toMap());
@@ -82,6 +88,7 @@ class ProductService {
 
   // 데이터 수정
   Future<int> update(Product product) async {
+    final String url = "${_config.backendUrl}/qr/products";
     int result = 0;
     try {
       var response = await dio.put(url, data: product.toMap());
@@ -102,6 +109,7 @@ class ProductService {
 
   // 데이터 삭제
   Future<int> delete(String id) async {
+    final String url = "${_config.backendUrl}/qr/products";
     int result = 0;
     try {
       var response = await dio.delete("$url/$id");

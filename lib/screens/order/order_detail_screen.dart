@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:freeorder_flutter/models/option_item.dart';
 import 'package:freeorder_flutter/models/order.dart';
 import 'package:freeorder_flutter/utils/format.dart';
 

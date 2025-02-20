@@ -21,18 +21,14 @@ class _MainScreenState extends State<MainScreen> {
               children: [
                 Text(
                   "Qr Order",
-                  style: TextStyle(
-                      fontSize: 35,
-                      color: Color.fromARGB(255, 255, 100, 50),
-                      fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 35, color: Color.fromARGB(255, 255, 100, 50), fontWeight: FontWeight.bold),
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                       padding: EdgeInsets.fromLTRB(50, 20, 50, 20),
                       backgroundColor: Color.fromARGB(255, 255, 100, 50),
                       foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20))),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20))),
                   onPressed: () {
                     userProvider.setType("HERE");
                     Navigator.pushNamed(context, "/menu/list");
@@ -58,17 +54,14 @@ class _MainScreenState extends State<MainScreen> {
                       padding: EdgeInsets.fromLTRB(50, 20, 50, 20),
                       backgroundColor: Color.fromARGB(255, 255, 100, 50),
                       foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20))),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20))),
                   onPressed: () {
                     userProvider.setType("TOGO");
                     Navigator.pushNamed(context, "/menu/list");
                   },
                   child: Column(
                     children: [
-                      Image(
-                          image: AssetImage("images/qrTakeout.png"),
-                          width: 100),
+                      Image(image: AssetImage("images/qrTakeout.png"), width: 100),
                       SizedBox(
                         height: 15,
                       ),

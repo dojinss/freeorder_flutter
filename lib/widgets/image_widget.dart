@@ -1,9 +1,10 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
+import 'package:freeorder_flutter/main.dart';
+
 class ImageWidget extends StatefulWidget {
-  final String productURL = "http://10.0.2.2:8080/pimg?id=";
-  final String noticeURL = "http://10.0.2.2:8080/timg?id=";
   final String id;
   final double width;
   final double height;
@@ -64,6 +65,10 @@ class _ImageWidgetState extends State<ImageWidget> {
   }
 
   String getImageUrl(String id, {bool isThumb = false}) {
-    return isThumb ? widget.noticeURL + id : widget.productURL + id;
+    final GlobalConfig config = GlobalConfig();
+    final String url = config.backendUrl;
+    final String productURL = "$url/pimg?id=";
+    final String noticeURL = "$url/timg?id=";
+    return isThumb ? noticeURL + id : productURL + id;
   }
 }

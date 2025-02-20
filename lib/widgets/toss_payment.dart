@@ -29,6 +29,7 @@ class ToassPayment extends StatelessWidget {
   Widget build(BuildContext context) {
     StompClient? stompClient;
     final String url = "ws://10.0.2.2:8080/ws"; // WebSocket 서버 URL
+    // final String url = "ws://dojinss.cafe24.com/ws";
 
     stompClient = StompClient(
       config: StompConfig(

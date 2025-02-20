@@ -1,13 +1,16 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:freeorder_flutter/main.dart';
 
 class CategoryService {
   // 테이블 이름
-  final String url = 'http://10.0.2.2:8080/qr/categories';
+  // final String url = 'http://10.0.2.2:8080/qr/categories';
+  final GlobalConfig _config = GlobalConfig();
   final Dio dio = Dio();
 
   // 데이터 목록 조회
   Future<List<Map<String, dynamic>>> list() async {
+    final String url = "${_config.backendUrl}/qr/categories";
     var list = List<Map<String, dynamic>>.empty();
     try {
       Response response = await dio.get(url);
