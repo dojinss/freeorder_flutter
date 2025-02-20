@@ -1,12 +1,14 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:freeorder_flutter/main.dart';
 import 'package:freeorder_flutter/models/cart.dart';
 import 'package:freeorder_flutter/models/product.dart';
 
 class CartService {
   // 테이블 이름
-  final String url = 'http://10.0.2.2:8080/qr/carts';
+  // final String url = 'http://10.0.2.2:8080/qr/carts';
+  final GlobalConfig _config = GlobalConfig();
   final Dio dio = Dio();
 
   // 데이터 목록 조회
@@ -21,11 +23,11 @@ class CartService {
       return cartItems;
     }
 
-    String requestUrl = '$url/all/$usersId';
-    debugPrint("📢 요청 url: $requestUrl");
+    final String url = "${_config.backendUrl}/qr/carts/all/$usersId";
+    debugPrint("📢 요청 url: $url");
 
     try {
-      Response response = await dio.get(requestUrl);
+      Response response = await dio.get(url);
       debugPrint("✅ 서버 응답 상태 코드: ${response.statusCode}");
       debugPrint("✅ 서버 응답 데이터 타입: ${response.data.runtimeType}");
       debugPrint("✅ 서버 응답 데이터: ${response.data}");
@@ -49,9 +51,10 @@ class CartService {
 
   // 데이터 단일 조회
   Future<Map<String, dynamic>?> select(String id) async {
+    final String url = "${_config.backendUrl}/qr/carts/$id";
     var cart = Map<String, dynamic>.fromEntries(List.empty());
     try {
-      var response = await dio.get('$url/$id');
+      var response = await dio.get(url);
       debugPrint(":::::response - body ::::::");
       var data = response.data;
       if (data.containsKey("cart") && data["cart"] is Map<String, dynamic>) {
@@ -66,11 +69,12 @@ class CartService {
 
   // 데이터 등록
   Future<int> insert(Product product) async {
+    final storage = const FlutterSecureStorage();
+    String? usersId = await storage.read(key: "usersId");
+    final String url = "${_config.backendUrl}/qr/carts/$usersId";
     int result = 0;
     try {
-      final storage = const FlutterSecureStorage();
-      String? usersId = await storage.read(key: "usersId");
-      var response = await dio.post('$url/$usersId', data: product.toMap());
+      var response = await dio.post(url, data: product.toMap());
 
       debugPrint(":::::response - body ::::::");
       debugPrint("${response.data}");
@@ -89,9 +93,10 @@ class CartService {
 
   // 데이터 수정
   Future<int> update(Cart cart) async {
+    final String url = "${_config.backendUrl}/qr/carts/${cart.usersId}";
     int result = 0;
     try {
-      var response = await dio.put('$url/${cart.usersId}', data: cart.toMap());
+      var response = await dio.put(url, data: cart.toMap());
       debugPrint(":::::response - body ::::::");
       debugPrint("${response.data}");
 
@@ -109,9 +114,10 @@ class CartService {
 
   // 데이터 삭제
   Future<int> delete(String id) async {
+    final String url = "${_config.backendUrl}/qr/carts/$id";
     int result = 0;
     try {
-      var response = await dio.delete('$url/$id');
+      var response = await dio.delete(url);
       debugPrint(":::::response - body ::::::");
       debugPrint("${response.data}");
 
@@ -129,10 +135,10 @@ class CartService {
 
   // 데이터 전체체 삭제
   Future<int> deleteAll(String id) async {
+    final String url = "${_config.backendUrl}/qr/carts/all/$id";
     int result = 0;
-    debugPrint("$url/all/$id");
     try {
-      var response = await dio.delete('$url/all/$id');
+      var response = await dio.delete(url);
       debugPrint(":::::response - body ::::::");
       debugPrint("${response.data}");
 

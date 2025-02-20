@@ -23,13 +23,13 @@ class BlueButton extends StatelessWidget {
   final Size? minimumSize;
 
   const BlueButton({
-    Key? key,
+    super.key,
     required this.onPressed,
     required this.text,
     this.backgroundColor,
     this.borderRadius,
     this.minimumSize,
-  }) : super(key: key);
+  });
 
   BlueButton copyWith({
     void Function()? onPressed,

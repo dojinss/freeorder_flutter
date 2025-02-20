@@ -73,7 +73,7 @@ class _MenuScreenState extends State<MenuScreen> {
                 ),
                 leading: IconButton(
                   icon: const Icon(Icons.arrow_circle_left_outlined),
-                  onPressed: () => Navigator.pop(context),
+                  onPressed: () => Navigator.pushReplacementNamed(context, "/"),
                   iconSize: 30,
                 ),
                 actions: [

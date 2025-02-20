@@ -123,15 +123,6 @@ class ResultPage extends StatelessWidget {
   Widget build(BuildContext context) {
     dynamic result = Get.arguments;
     debugPrint("결과값 : $result");
-    String message;
-
-    if (result is Success) {
-      message = '인증 성공! 결제승인API를 호출해 결제를 완료하세요!';
-    } else if (result is Fail) {
-      message = '결제에 실패하였습니다';
-    } else {
-      message = "결과값이 없습니다.";
-    }
     return Scaffold(
       appBar: AppBar(
         title: const Text('결제 결과'),

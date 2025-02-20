@@ -1,15 +1,18 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:freeorder_flutter/main.dart';
 import 'package:freeorder_flutter/models/payment.dart';
 
 class PaymentService {
   // 테이블 이름
-  final String url = 'http://10.0.2.2:8080/payments';
+  // final String url = 'http://10.0.2.2:8080/payments';
+  final GlobalConfig _config = GlobalConfig();
   final Dio dio = Dio();
 
   // 데이터 목록 조회
   Future<List<Map<String, dynamic>>> list() async {
+    final String url = "${_config.backendUrl}/payments";
     var list = List<Map<String, dynamic>>.empty();
     try {
       Response response = await dio.get(url);
@@ -25,6 +28,7 @@ class PaymentService {
 
   // 데이터 단일 조회
   Future<Map<String, dynamic>?> select(String type) async {
+    final String url = "${_config.backendUrl}/payments";
     var result = Map<String, dynamic>.fromEntries(List.empty());
     final storage = const FlutterSecureStorage();
     String? usersId = await storage.read(key: "usersId");
@@ -48,9 +52,10 @@ class PaymentService {
 
   // 데이터 등록
   Future<int> insert(Payment payment) async {
+    final String url = "${_config.backendUrl}/qr/payments";
     int result = 0;
     try {
-      var response = await dio.post("http://10.0.2.2:8080/qr/payments", data: payment.toMap());
+      var response = await dio.post(url, data: payment.toMap());
 
       debugPrint(":::::reponse - body ::::::");
       debugPrint("${response.data}");
@@ -69,6 +74,7 @@ class PaymentService {
 
   // 데이터 수정
   Future<int> update(Payment payment) async {
+    final String url = "${_config.backendUrl}/payments";
     int result = 0;
     try {
       var response = await dio.put(url, data: payment.toMap());
@@ -89,6 +95,7 @@ class PaymentService {
 
   // 데이터 삭제
   Future<int> delete(String id) async {
+    final String url = "${_config.backendUrl}/payments";
     int result = 0;
     try {
       var response = await dio.delete("$url/$id");
