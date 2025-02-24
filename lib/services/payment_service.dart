@@ -6,7 +6,7 @@ import 'package:freeorder_flutter/models/payment.dart';
 
 class PaymentService {
   // 테이블 이름
-  // final String url = 'http://10.0.2.2:8080/payments';
+  // final String url = 'http://192.168.30.137:8080/payments';
   final GlobalConfig _config = GlobalConfig();
   final Dio dio = Dio();
 

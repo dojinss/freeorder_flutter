@@ -18,7 +18,7 @@ import 'package:provider/provider.dart';
 class GlobalConfig extends ChangeNotifier {
   Color primaryColor = Color.fromRGBO(255, 102, 0, 1);
   // String backendUrl = "http://dojinss.cafe24.com";
-  String backendUrl = "http://10.0.2.2:8080";
+  String backendUrl = "http://192.168.30.137:8080";
   String get getUrl => backendUrl;
   void changeColor(Color newColor) {
     primaryColor = newColor;

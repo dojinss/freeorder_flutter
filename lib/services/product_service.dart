@@ -5,7 +5,7 @@ import 'package:freeorder_flutter/models/product.dart';
 
 class ProductService {
   // 테이블 이름
-  // final String url = 'http://10.0.2.2:8080/qr/products';
+  // final String url = 'http://192.168.30.137:8080/qr/products';
   final Dio dio = Dio();
   final GlobalConfig _config = GlobalConfig();
 

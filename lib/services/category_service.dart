@@ -4,7 +4,7 @@ import 'package:freeorder_flutter/main.dart';
 
 class CategoryService {
   // 테이블 이름
-  // final String url = 'http://10.0.2.2:8080/qr/categories';
+  // final String url = 'http://192.168.30.137:8080/qr/categories';
   final GlobalConfig _config = GlobalConfig();
   final Dio dio = Dio();
 
